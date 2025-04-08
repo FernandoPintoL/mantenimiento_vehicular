@@ -1,10 +1,9 @@
 package com.fpl.mantenimientovehicular;
 
+import androidx.activity.EdgeToEdge;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
-
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -26,13 +25,10 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Botón para acceder al módulo de vehículos
         Button btnVehiculos = findViewById(R.id.btnVehiculos);
         btnVehiculos.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, VehiculosListaActivity.class);
             startActivity(intent);
         });
-
-        // Puedes agregar más botones para otros módulos aquí
     }
 }

@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.fpl.mantenimientovehicular.R;
 import com.fpl.mantenimientovehicular.model.vehiculo.Vehiculo;
 
@@ -18,9 +20,10 @@ public class VehiculoAdapter extends ArrayAdapter<Vehiculo> {
         super(context, 0, vehiculos);
     }
 
+    @NonNull
     @SuppressLint("SetTextI18n")
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         Vehiculo vehiculo = getItem(position);
 
         if (convertView == null) {
