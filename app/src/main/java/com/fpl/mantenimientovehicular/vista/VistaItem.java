@@ -11,35 +11,34 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.fpl.mantenimientovehicular.R;
-import com.fpl.mantenimientovehicular.controller.VehiculoController;
-import com.fpl.mantenimientovehicular.model.ModeloVehiculo;
+import com.fpl.mantenimientovehicular.controller.ItemController;
+import com.fpl.mantenimientovehicular.model.ModeloItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class VistaVehiculo extends AppCompatActivity {
-    private VehiculoController controlador;
-    private ModeloVehiculo modelo;
-    private List<ModeloVehiculo> listado;
+public class VistaItem extends AppCompatActivity {
+    private ItemController controlador;
+    private ModeloItem modelo;
+    private List<ModeloItem> listado;
     private ListView listView;
     private Button btnAction, btnEliminar;
-    private EditText etMarca, etAnho, etPlaca, etTipo, etKilometraje;
+    private EditText etNombre, etPrecio, etDetalle;
     @Override
     public void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_vehiculo_main);
+        setContentView(R.layout.activity_item_main);
 
-        controlador = new VehiculoController(this);
-        modelo = new ModeloVehiculo(this);
+        controlador = new ItemController(this);
+        modelo = new ModeloItem();
+        modelo.initDatabase(this);
 
-        etMarca = findViewById(R.id.etMarca);
-        etAnho = findViewById(R.id.etAnho);
-        etPlaca = findViewById(R.id.etPlaca);
-        etTipo = findViewById(R.id.etTipo);
-        etKilometraje = findViewById(R.id.etKilometraje);
-        btnAction = findViewById(R.id.btnActionVehiculo);
-        btnEliminar = findViewById(R.id.btnEliminarVehiculo);
-        listView = findViewById(R.id.listViewVehiculos);
+        etNombre = findViewById(R.id.etNombre);
+        etPrecio = findViewById(R.id.etPrecio);
+        etDetalle = findViewById(R.id.etDetalle);
+        btnAction = findViewById(R.id.btnActionItem);
+        btnEliminar = findViewById(R.id.btnEliminarItem);
+        listView = findViewById(R.id.listViewRespuestos);
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             btnAction.setText("Editar");
@@ -62,32 +61,23 @@ public class VistaVehiculo extends AppCompatActivity {
             Toast.makeText(this, "No hay registros", Toast.LENGTH_SHORT).show();
         }
         // Crear una lista de cadenas con la información que deseas mostrar
-        List<String> vehiculosInfo = new ArrayList<>();
-        for (ModeloVehiculo vehiculo : listado) {
-            vehiculosInfo.add("ID: "+vehiculo.getId()+" Placa: "+vehiculo.getPlaca()+" Marca: "+vehiculo.getMarca() + " Tipo: " + vehiculo.getTipo()+" Año: "+vehiculo.getAño()+" Kilometraje: "+vehiculo.getKilometraje());
+        List<String> modelInfos = new ArrayList<>();
+        for (ModeloItem model : listado) {
+            modelInfos.add("ID: "+model.getId()+" Nombre: "+model.getNombre()+" Precio: "+model.getPrecio() + " Detalle: " + model.getDetalle());
         }
         // Usar un ArrayAdapter simple para mostrar la información
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, vehiculosInfo);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, modelInfos);
         listView.setAdapter(adapter);
     }
-    private void llenarFormulario(ModeloVehiculo vehiculo) {
-        etMarca.setText(vehiculo.getMarca());
-        etAnho.setText(vehiculo.getAño());
-        etPlaca.setText(vehiculo.getPlaca());
-        etTipo.setText(vehiculo.getTipo());
-        etKilometraje.setText(String.valueOf(vehiculo.getKilometraje()));
+    private void llenarFormulario(ModeloItem modelo) {
+        etNombre.setText(modelo.getNombre());
+        etPrecio.setText(String.valueOf(modelo.getPrecio()));
+        etDetalle.setText(modelo.getDetalle());
     }
     private void ejecutarAccion() {
-        modelo.setMarca(etMarca.getText().toString());
-        modelo.setAño(etAnho.getText().toString());
-        modelo.setPlaca(etPlaca.getText().toString());
-        modelo.setTipo(etTipo.getText().toString());
-
-        try {
-            modelo.setKilometraje(Integer.parseInt(etKilometraje.getText().toString()));
-        } catch (NumberFormatException e) {
-            modelo.setKilometraje(0);
-        }
+        modelo.setNombre(etNombre.getText().toString());
+        modelo.setPrecio(Double.parseDouble(etPrecio.getText().toString()));
+        modelo.setDetalle(etDetalle.getText().toString());
 
         if (modelo.getId() > 0) {
             // Actualizar
@@ -110,14 +100,12 @@ public class VistaVehiculo extends AppCompatActivity {
         limpiarFormulario();
     }
     private void limpiarFormulario() {
-        etMarca.setText("");
-        etAnho.setText("");
-        etPlaca.setText("");
-        etTipo.setText("");
-        etKilometraje.setText("");
+        etNombre.setText("");
+        etPrecio.setText("");
+        etDetalle.setText("");
         btnAction.setText("Guardar");
         btnEliminar.setVisibility(View.GONE);
-        modelo = new ModeloVehiculo();
+        modelo = new ModeloItem();
     }
     private void eliminar(){
         if (modelo.getId() > 0) {

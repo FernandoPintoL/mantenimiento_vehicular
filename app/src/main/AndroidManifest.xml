@@ -21,9 +21,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".vista.vehiculo.VehiculosListaActivity"/>
-        <activity android:name=".vista.vehiculo.VehiculoFormActivity" />
         <activity android:name=".vista.VistaVehiculo" />
+        <activity android:name=".vista.VistaMecanico" />
+        <activity android:name=".vista.VistaItem" />
     </application>
 
 </manifest>

@@ -2,7 +2,7 @@ package com.fpl.mantenimientovehicular.controller;
 
 import android.content.Context;
 
-import com.fpl.mantenimientovehicular.model.vehiculo.ModeloVehiculo;
+import com.fpl.mantenimientovehicular.model.ModeloVehiculo;
 
 import java.util.List;
 
