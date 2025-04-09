@@ -3,8 +3,7 @@ package com.fpl.mantenimientovehicular.model.vehiculo;
 public class Vehiculo {
     private int id;
     private String marca;
-    private String modelo;
-    private String año;
+    private String anho;
     private String placa;
     private String tipo;
     private int kilometraje;
@@ -13,11 +12,10 @@ public class Vehiculo {
         // Constructor vacío
     }
 
-    public Vehiculo(int id, String marca, String modelo, String año, String placa, String tipo, int kilometraje) {
+    public Vehiculo(int id, String marca, String año, String placa, String tipo, int kilometraje) {
         this.id = id;
         this.marca = marca;
-        this.modelo = modelo;
-        this.año = año;
+        this.anho = año;
         this.placa = placa;
         this.tipo = tipo;
         this.kilometraje = kilometraje;
@@ -39,20 +37,12 @@ public class Vehiculo {
         this.marca = marca;
     }
 
-    public String getModelo() {
-        return modelo;
-    }
-
-    public void setModelo(String modelo) {
-        this.modelo = modelo;
-    }
-
     public String getAño() {
-        return año;
+        return anho;
     }
 
     public void setAño(String año) {
-        this.año = año;
+        this.anho = año;
     }
 
     public String getPlaca() {

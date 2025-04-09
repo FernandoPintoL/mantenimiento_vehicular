@@ -1,3 +1,4 @@
+/*
 package com.fpl.mantenimientovehicular.vista.vehiculo;
 
 import android.content.Intent;
@@ -27,12 +28,14 @@ public class VehiculosListaActivity extends AppCompatActivity {
 
         vehiculoController = new VehiculoController(this);
         listViewVehiculos = findViewById(R.id.listViewVehiculos);
-        btnAgregarVehiculo = findViewById(R.id.btnAgregarVehiculo);
+        */
+/*btnAgregarVehiculo = findViewById(R.id.btnAgregarVehiculo);
 
         btnAgregarVehiculo.setOnClickListener(v -> {
             Intent intent = new Intent(VehiculosListaActivity.this, VehiculoFormActivity.class);
             startActivity(intent);
-        });
+        });*//*
+
 
         listViewVehiculos.setOnItemClickListener((parent, view, position, id) -> {
             Vehiculo vehiculoSeleccionado = listaVehiculos.get(position);
@@ -57,3 +60,4 @@ public class VehiculosListaActivity extends AppCompatActivity {
     }
 
 }
+*/

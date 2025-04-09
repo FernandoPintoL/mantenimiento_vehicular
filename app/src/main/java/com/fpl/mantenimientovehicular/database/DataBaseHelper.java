@@ -13,8 +13,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             "CREATE TABLE vehiculos (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "marca TEXT NOT NULL, " +
-                    "modelo TEXT NOT NULL, " +
-                    "año TEXT NOT NULL, " +
+                    "anho TEXT NOT NULL, " +
                     "placa TEXT NOT NULL UNIQUE, " +
                     "tipo TEXT NOT NULL, " +
                     "kilometraje INTEGER NOT NULL);";

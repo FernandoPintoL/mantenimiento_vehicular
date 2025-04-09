@@ -9,7 +9,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.fpl.mantenimientovehicular.vista.vehiculo.VehiculosListaActivity;
+import com.fpl.mantenimientovehicular.vista.VistaVehiculo;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,9 +25,9 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        Button btnVehiculos = findViewById(R.id.btnVehiculos);
+        Button btnVehiculos = findViewById(R.id.btnGestionarVehiculos);
         btnVehiculos.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, VehiculosListaActivity.class);
+            Intent intent = new Intent(MainActivity.this, VistaVehiculo.class);
             startActivity(intent);
         });
     }

@@ -20,9 +20,8 @@ public class VehiculoAdapter extends ArrayAdapter<Vehiculo> {
         super(context, 0, vehiculos);
     }
 
-    @NonNull
     @SuppressLint("SetTextI18n")
-    @Override
+    @NonNull
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         Vehiculo vehiculo = getItem(position);
 
@@ -36,7 +35,7 @@ public class VehiculoAdapter extends ArrayAdapter<Vehiculo> {
         TextView tvKilometraje = convertView.findViewById(R.id.tvKilometraje);
 
         assert vehiculo != null;
-        tvMarcaModelo.setText(vehiculo.getMarca() + " " + vehiculo.getModelo());
+        tvMarcaModelo.setText(vehiculo.getMarca());
         tvPlaca.setText(vehiculo.getPlaca());
         tvKilometraje.setText("KM: " + vehiculo.getKilometraje());
 

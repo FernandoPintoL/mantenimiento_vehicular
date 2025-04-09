@@ -31,8 +31,7 @@ public class VehiculoDAO {
     public long agregarVehiculo(Vehiculo vehiculo) {
         ContentValues values = new ContentValues();
         values.put("marca", vehiculo.getMarca());
-        values.put("modelo", vehiculo.getModelo());
-        values.put("año", vehiculo.getAño());
+        values.put("anho", vehiculo.getAño());
         values.put("placa", vehiculo.getPlaca());
         values.put("tipo", vehiculo.getTipo());
         values.put("kilometraje", vehiculo.getKilometraje());
@@ -51,8 +50,7 @@ public class VehiculoDAO {
                 Vehiculo vehiculo = new Vehiculo();
                 vehiculo.setId(cursor.getInt(cursor.getColumnIndex("id")));
                 vehiculo.setMarca(cursor.getString(cursor.getColumnIndex("marca")));
-                vehiculo.setModelo(cursor.getString(cursor.getColumnIndex("modelo")));
-                vehiculo.setAño(cursor.getString(cursor.getColumnIndex("año")));
+                vehiculo.setAño(cursor.getString(cursor.getColumnIndex("anho")));
                 vehiculo.setPlaca(cursor.getString(cursor.getColumnIndex("placa")));
                 vehiculo.setTipo(cursor.getString(cursor.getColumnIndex("tipo")));
                 vehiculo.setKilometraje(cursor.getInt(cursor.getColumnIndex("kilometraje")));
@@ -73,8 +71,7 @@ public class VehiculoDAO {
             Vehiculo vehiculo = new Vehiculo();
             vehiculo.setId(cursor.getInt(cursor.getColumnIndex("id")));
             vehiculo.setMarca(cursor.getString(cursor.getColumnIndex("marca")));
-            vehiculo.setModelo(cursor.getString(cursor.getColumnIndex("modelo")));
-            vehiculo.setAño(cursor.getString(cursor.getColumnIndex("año")));
+            vehiculo.setAño(cursor.getString(cursor.getColumnIndex("anho")));
             vehiculo.setPlaca(cursor.getString(cursor.getColumnIndex("placa")));
             vehiculo.setTipo(cursor.getString(cursor.getColumnIndex("tipo")));
             vehiculo.setKilometraje(cursor.getInt(cursor.getColumnIndex("kilometraje")));
@@ -88,8 +85,7 @@ public class VehiculoDAO {
     public int actualizarVehiculo(Vehiculo vehiculo) {
         ContentValues values = new ContentValues();
         values.put("marca", vehiculo.getMarca());
-        values.put("modelo", vehiculo.getModelo());
-        values.put("año", vehiculo.getAño());
+        values.put("anho", vehiculo.getAño());
         values.put("placa", vehiculo.getPlaca());
         values.put("tipo", vehiculo.getTipo());
         values.put("kilometraje", vehiculo.getKilometraje());

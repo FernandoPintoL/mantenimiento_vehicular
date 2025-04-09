@@ -1,3 +1,4 @@
+/*
 package com.fpl.mantenimientovehicular.vista.vehiculo;
 
 import android.os.Bundle;
@@ -26,7 +27,6 @@ public class VehiculoFormActivity extends AppCompatActivity {
         vehiculoController = new VehiculoController(this);
 
         etMarca = findViewById(R.id.etMarca);
-        etModelo = findViewById(R.id.etModelo);
         etAnio = findViewById(R.id.etAnio);
         etPlaca = findViewById(R.id.etPlaca);
         etTipo = findViewById(R.id.etTipo);
@@ -103,3 +103,4 @@ public class VehiculoFormActivity extends AppCompatActivity {
         }
     }
 }
+*/
