@@ -36,7 +36,7 @@
                 android:inputType="text" />
 
             <EditText
-                android:id="@+id/etAnio"
+                android:id="@+id/etAnho"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Año"

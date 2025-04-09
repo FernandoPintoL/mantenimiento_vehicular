@@ -12,28 +12,28 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.fpl.mantenimientovehicular.R;
 import com.fpl.mantenimientovehicular.controller.VehiculoController;
-import com.fpl.mantenimientovehicular.model.vehiculo.VehiculoDAO;
+import com.fpl.mantenimientovehicular.model.vehiculo.ModeloVehiculo;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class VistaVehiculo extends AppCompatActivity {
     private VehiculoController controlador;
-    private VehiculoDAO modelo;
-    private List<VehiculoDAO> listado;
+    private ModeloVehiculo modelo;
+    private List<ModeloVehiculo> listado;
     private ListView listView;
     private Button btnAction, btnEliminar;
-    private EditText etMarca, etAnio, etPlaca, etTipo, etKilometraje;
+    private EditText etMarca, etAnho, etPlaca, etTipo, etKilometraje;
     @Override
     public void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vehiculo_main);
 
         controlador = new VehiculoController(this);
-        modelo = new VehiculoDAO(this);
+        modelo = new ModeloVehiculo(this);
 
         etMarca = findViewById(R.id.etMarca);
-        etAnio = findViewById(R.id.etAnio);
+        etAnho = findViewById(R.id.etAnho);
         etPlaca = findViewById(R.id.etPlaca);
         etTipo = findViewById(R.id.etTipo);
         etKilometraje = findViewById(R.id.etKilometraje);
@@ -47,40 +47,36 @@ public class VistaVehiculo extends AppCompatActivity {
             llenarFormulario(modelo);
             btnEliminar.setVisibility(View.VISIBLE);
         });
-        btnAction.setOnClickListener(v -> guardar());
-        listar();
+        btnAction.setOnClickListener(v -> ejecutarAccion());
+        obtenerTodos();
     }
-
     @Override
     protected void onResume() {
         super.onResume();
-        listar();
+        obtenerTodos();
     }
-
-    private void listar() {
+    private void obtenerTodos() {
         listado = controlador.obtenerTodos();
         if (listado.isEmpty()) return;
         // Crear una lista de cadenas con la información que deseas mostrar
         List<String> vehiculosInfo = new ArrayList<>();
-        for (VehiculoDAO vehiculo : listado) {
+        for (ModeloVehiculo vehiculo : listado) {
             vehiculosInfo.add("ID: "+vehiculo.getId()+" Placa: "+vehiculo.getPlaca()+" Marca: "+vehiculo.getMarca() + " Tipo: " + vehiculo.getTipo()+" Año: "+vehiculo.getAño()+" Kilometraje: "+vehiculo.getKilometraje());
         }
         // Usar un ArrayAdapter simple para mostrar la información
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, vehiculosInfo);
         listView.setAdapter(adapter);
     }
-
-    private void llenarFormulario(VehiculoDAO vehiculo) {
+    private void llenarFormulario(ModeloVehiculo vehiculo) {
         etMarca.setText(vehiculo.getMarca());
-        etAnio.setText(vehiculo.getAño());
+        etAnho.setText(vehiculo.getAño());
         etPlaca.setText(vehiculo.getPlaca());
         etTipo.setText(vehiculo.getTipo());
         etKilometraje.setText(String.valueOf(vehiculo.getKilometraje()));
     }
-
-    private void guardar() {
+    private void ejecutarAccion() {
         modelo.setMarca(etMarca.getText().toString());
-        modelo.setAño(etAnio.getText().toString());
+        modelo.setAño(etAnho.getText().toString());
         modelo.setPlaca(etPlaca.getText().toString());
         modelo.setTipo(etTipo.getText().toString());
 
@@ -107,19 +103,17 @@ public class VistaVehiculo extends AppCompatActivity {
                 Toast.makeText(this, "Error al guardar", Toast.LENGTH_SHORT).show();
             }
         }
-        listar();
+        obtenerTodos();
         limpiarFormulario();
     }
-
     private void limpiarFormulario() {
         etMarca.setText("");
-        etAnio.setText("");
+        etAnho.setText("");
         etPlaca.setText("");
         etTipo.setText("");
         etKilometraje.setText("");
         btnAction.setText("Guardar");
         btnEliminar.setVisibility(View.GONE);
-        modelo = new VehiculoDAO();
+        modelo = new ModeloVehiculo();
     }
-
 }

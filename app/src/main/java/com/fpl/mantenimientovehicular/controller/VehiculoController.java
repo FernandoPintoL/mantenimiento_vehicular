@@ -2,39 +2,39 @@ package com.fpl.mantenimientovehicular.controller;
 
 import android.content.Context;
 
-import com.fpl.mantenimientovehicular.model.vehiculo.VehiculoDAO;
+import com.fpl.mantenimientovehicular.model.vehiculo.ModeloVehiculo;
 
 import java.util.List;
 
 public class VehiculoController {
-    private VehiculoDAO vehiculoDAO;
+    private ModeloVehiculo modeloVehiculo;
 
     public VehiculoController(Context context) {
-        vehiculoDAO = new VehiculoDAO(context);
-        vehiculoDAO.open();
+        modeloVehiculo = new ModeloVehiculo(context);
+        modeloVehiculo.open();
     }
 
-    public long agregar(VehiculoDAO vehiculo) {
-        return vehiculoDAO.agregar(vehiculo);
+    public long agregar(ModeloVehiculo vehiculo) {
+        return modeloVehiculo.agregar(vehiculo);
     }
 
-    public List<VehiculoDAO> obtenerTodos() {
-        return vehiculoDAO.obtenerTodos();
+    public List<ModeloVehiculo> obtenerTodos() {
+        return modeloVehiculo.obtenerTodos();
     }
 
-    public VehiculoDAO obtenerPorId(int id) {
-        return vehiculoDAO.obtenerPorId(id);
+    public ModeloVehiculo obtenerPorId(int id) {
+        return modeloVehiculo.obtenerPorId(id);
     }
 
-    public int actualizar(VehiculoDAO vehiculo) {
-        return vehiculoDAO.actualizar(vehiculo);
+    public int actualizar(ModeloVehiculo vehiculo) {
+        return modeloVehiculo.actualizar(vehiculo);
     }
 
     public boolean eliminar(int id) {
-        return vehiculoDAO.eliminar(id) > 0;
+        return modeloVehiculo.eliminar(id) > 0;
     }
 
     public void close() {
-        vehiculoDAO.close();
+        modeloVehiculo.close();
     }
 }

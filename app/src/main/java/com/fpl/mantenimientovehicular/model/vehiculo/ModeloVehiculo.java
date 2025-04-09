@@ -11,7 +11,7 @@ import com.fpl.mantenimientovehicular.database.DataBaseHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VehiculoDAO {
+public class ModeloVehiculo {
     private int id;
     private String marca;
     private String anho;
@@ -20,31 +20,28 @@ public class VehiculoDAO {
     private int kilometraje;
     private DataBaseHelper dbHelper;
     private SQLiteDatabase db;
-    public VehiculoDAO() {
+    public ModeloVehiculo() {
     }
-    public VehiculoDAO(Context context) {
+    public ModeloVehiculo(Context context) {
         dbHelper = new DataBaseHelper(context);
     }
-    public VehiculoDAO(Context context, int id, String marca, String año, String placa, String tipo, int kilometraje) {
+    public ModeloVehiculo(Context context, int id, String marca, String anho, String placa, String tipo, int kilometraje) {
         dbHelper = new DataBaseHelper(context);
         this.id = id;
         this.marca = marca;
-        this.anho = año;
+        this.anho = anho;
         this.placa = placa;
         this.tipo = tipo;
         this.kilometraje = kilometraje;
     }
-
     public void open() {
         db = dbHelper.getWritableDatabase();
     }
-
     public void close() {
         dbHelper.close();
     }
-
     // CREATE
-    public long agregar(VehiculoDAO vehiculo) {
+    public long agregar(ModeloVehiculo vehiculo) {
         ContentValues values = new ContentValues();
         values.put("marca", vehiculo.getMarca());
         values.put("anho", vehiculo.getAño());
@@ -54,16 +51,15 @@ public class VehiculoDAO {
 
         return db.insert("vehiculos", null, values);
     }
-
     // READ (Todos los vehículos)
     @SuppressLint("Range")
-    public List<VehiculoDAO> obtenerTodos() {
-        List<VehiculoDAO> vehiculos = new ArrayList<>();
+    public List<ModeloVehiculo> obtenerTodos() {
+        List<ModeloVehiculo> vehiculos = new ArrayList<>();
         Cursor cursor = db.query("vehiculos", null, null, null, null, null, null);
 
         if (cursor.moveToFirst()) {
             do {
-                VehiculoDAO vehiculo = new VehiculoDAO();
+                ModeloVehiculo vehiculo = new ModeloVehiculo();
                 vehiculo.setId(cursor.getInt(cursor.getColumnIndex("id")));
                 vehiculo.setMarca(cursor.getString(cursor.getColumnIndex("marca")));
                 vehiculo.setAño(cursor.getString(cursor.getColumnIndex("anho")));
@@ -76,15 +72,14 @@ public class VehiculoDAO {
         cursor.close();
         return vehiculos;
     }
-
     // READ (Un vehículo por ID)
     @SuppressLint("Range")
-    public VehiculoDAO obtenerPorId(int id) {
+    public ModeloVehiculo obtenerPorId(int id) {
         Cursor cursor = db.query("vehiculos", null, "id = ?",
                 new String[]{String.valueOf(id)}, null, null, null);
 
         if (cursor != null && cursor.moveToFirst()) {
-            VehiculoDAO vehiculo = new VehiculoDAO();
+            ModeloVehiculo vehiculo = new ModeloVehiculo();
             vehiculo.setId(cursor.getInt(cursor.getColumnIndex("id")));
             vehiculo.setMarca(cursor.getString(cursor.getColumnIndex("marca")));
             vehiculo.setAño(cursor.getString(cursor.getColumnIndex("anho")));
@@ -96,9 +91,8 @@ public class VehiculoDAO {
         }
         return null;
     }
-
     // UPDATE
-    public int actualizar(VehiculoDAO vehiculo) {
+    public int actualizar(ModeloVehiculo vehiculo) {
         ContentValues values = new ContentValues();
         values.put("marca", vehiculo.getMarca());
         values.put("anho", vehiculo.getAño());
@@ -109,12 +103,12 @@ public class VehiculoDAO {
         return db.update("vehiculos", values, "id = ?",
                 new String[]{String.valueOf(vehiculo.getId())});
     }
-
     // DELETE
     public int eliminar(int id) {
         return db.delete("vehiculos", "id = ?",
                 new String[]{String.valueOf(id)});
     }
+
     public int getId() {
         return id;
     }
@@ -130,8 +124,8 @@ public class VehiculoDAO {
     public String getAño() {
         return anho;
     }
-    public void setAño(String año) {
-        this.anho = año;
+    public void setAño(String anho) {
+        this.anho = anho;
     }
     public String getPlaca() {
         return placa;
