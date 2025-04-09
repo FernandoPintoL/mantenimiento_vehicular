@@ -12,11 +12,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class VehiculoDAO {
+    private int id;
+    private String marca;
+    private String anho;
+    private String placa;
+    private String tipo;
+    private int kilometraje;
     private DataBaseHelper dbHelper;
     private SQLiteDatabase db;
-
+    public VehiculoDAO() {
+    }
     public VehiculoDAO(Context context) {
         dbHelper = new DataBaseHelper(context);
+    }
+    public VehiculoDAO(Context context, int id, String marca, String año, String placa, String tipo, int kilometraje) {
+        dbHelper = new DataBaseHelper(context);
+        this.id = id;
+        this.marca = marca;
+        this.anho = año;
+        this.placa = placa;
+        this.tipo = tipo;
+        this.kilometraje = kilometraje;
     }
 
     public void open() {
@@ -28,7 +44,7 @@ public class VehiculoDAO {
     }
 
     // CREATE
-    public long agregarVehiculo(Vehiculo vehiculo) {
+    public long agregar(VehiculoDAO vehiculo) {
         ContentValues values = new ContentValues();
         values.put("marca", vehiculo.getMarca());
         values.put("anho", vehiculo.getAño());
@@ -41,13 +57,13 @@ public class VehiculoDAO {
 
     // READ (Todos los vehículos)
     @SuppressLint("Range")
-    public List<Vehiculo> obtenerTodosVehiculos() {
-        List<Vehiculo> vehiculos = new ArrayList<>();
+    public List<VehiculoDAO> obtenerTodos() {
+        List<VehiculoDAO> vehiculos = new ArrayList<>();
         Cursor cursor = db.query("vehiculos", null, null, null, null, null, null);
 
         if (cursor.moveToFirst()) {
             do {
-                Vehiculo vehiculo = new Vehiculo();
+                VehiculoDAO vehiculo = new VehiculoDAO();
                 vehiculo.setId(cursor.getInt(cursor.getColumnIndex("id")));
                 vehiculo.setMarca(cursor.getString(cursor.getColumnIndex("marca")));
                 vehiculo.setAño(cursor.getString(cursor.getColumnIndex("anho")));
@@ -63,12 +79,12 @@ public class VehiculoDAO {
 
     // READ (Un vehículo por ID)
     @SuppressLint("Range")
-    public Vehiculo obtenerVehiculoPorId(int id) {
+    public VehiculoDAO obtenerPorId(int id) {
         Cursor cursor = db.query("vehiculos", null, "id = ?",
                 new String[]{String.valueOf(id)}, null, null, null);
 
         if (cursor != null && cursor.moveToFirst()) {
-            Vehiculo vehiculo = new Vehiculo();
+            VehiculoDAO vehiculo = new VehiculoDAO();
             vehiculo.setId(cursor.getInt(cursor.getColumnIndex("id")));
             vehiculo.setMarca(cursor.getString(cursor.getColumnIndex("marca")));
             vehiculo.setAño(cursor.getString(cursor.getColumnIndex("anho")));
@@ -82,7 +98,7 @@ public class VehiculoDAO {
     }
 
     // UPDATE
-    public int actualizarVehiculo(Vehiculo vehiculo) {
+    public int actualizar(VehiculoDAO vehiculo) {
         ContentValues values = new ContentValues();
         values.put("marca", vehiculo.getMarca());
         values.put("anho", vehiculo.getAño());
@@ -95,8 +111,44 @@ public class VehiculoDAO {
     }
 
     // DELETE
-    public int eliminarVehiculo(int id) {
+    public int eliminar(int id) {
         return db.delete("vehiculos", "id = ?",
                 new String[]{String.valueOf(id)});
+    }
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
+    public String getMarca() {
+        return marca;
+    }
+    public void setMarca(String marca) {
+        this.marca = marca;
+    }
+    public String getAño() {
+        return anho;
+    }
+    public void setAño(String año) {
+        this.anho = año;
+    }
+    public String getPlaca() {
+        return placa;
+    }
+    public void setPlaca(String placa) {
+        this.placa = placa;
+    }
+    public String getTipo() {
+        return tipo;
+    }
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+    public int getKilometraje() {
+        return kilometraje;
+    }
+    public void setKilometraje(int kilometraje) {
+        this.kilometraje = kilometraje;
     }
 }

@@ -1,3 +1,4 @@
+/*
 package com.fpl.mantenimientovehicular.vista.vehiculo;
 
 import android.annotation.SuppressLint;
@@ -42,3 +43,4 @@ public class VehiculoAdapter extends ArrayAdapter<Vehiculo> {
         return convertView;
     }
 }
+*/

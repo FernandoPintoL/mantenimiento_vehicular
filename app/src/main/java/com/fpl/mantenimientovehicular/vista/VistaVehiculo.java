@@ -12,25 +12,25 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.fpl.mantenimientovehicular.R;
 import com.fpl.mantenimientovehicular.controller.VehiculoController;
-import com.fpl.mantenimientovehicular.model.vehiculo.Vehiculo;
+import com.fpl.mantenimientovehicular.model.vehiculo.VehiculoDAO;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class VistaVehiculo extends AppCompatActivity {
-    private EditText etMarca, etAnio, etPlaca, etTipo, etKilometraje;
+    private VehiculoController controlador;
+    private VehiculoDAO modelo;
+    private List<VehiculoDAO> listado;
     private ListView listView;
     private Button btnAction, btnEliminar;
-    private VehiculoController vehiculoController;
-    private Vehiculo vehiculo;
-    private List<Vehiculo> listado;
+    private EditText etMarca, etAnio, etPlaca, etTipo, etKilometraje;
     @Override
     public void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vehiculo_main);
 
-        vehiculoController = new VehiculoController(this);
-        vehiculo = new Vehiculo();
+        controlador = new VehiculoController(this);
+        modelo = new VehiculoDAO(this);
 
         etMarca = findViewById(R.id.etMarca);
         etAnio = findViewById(R.id.etAnio);
@@ -43,11 +43,11 @@ public class VistaVehiculo extends AppCompatActivity {
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             btnAction.setText("Editar");
-            vehiculo = listado.get(position);
-            llenarFormulario(vehiculo);
+            modelo = listado.get(position);
+            llenarFormulario(modelo);
             btnEliminar.setVisibility(View.VISIBLE);
         });
-        btnAction.setOnClickListener(v -> guardarVehiculo());
+        btnAction.setOnClickListener(v -> guardar());
         listar();
     }
 
@@ -58,20 +58,19 @@ public class VistaVehiculo extends AppCompatActivity {
     }
 
     private void listar() {
-        listado = vehiculoController.obtenerTodosVehiculos();
+        listado = controlador.obtenerTodos();
         if (listado.isEmpty()) return;
         // Crear una lista de cadenas con la información que deseas mostrar
         List<String> vehiculosInfo = new ArrayList<>();
-        for (Vehiculo vehiculo : listado) {
+        for (VehiculoDAO vehiculo : listado) {
             vehiculosInfo.add("ID: "+vehiculo.getId()+" Placa: "+vehiculo.getPlaca()+" Marca: "+vehiculo.getMarca() + " Tipo: " + vehiculo.getTipo()+" Año: "+vehiculo.getAño()+" Kilometraje: "+vehiculo.getKilometraje());
         }
-
         // Usar un ArrayAdapter simple para mostrar la información
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, vehiculosInfo);
         listView.setAdapter(adapter);
     }
 
-    private void llenarFormulario(Vehiculo vehiculo) {
+    private void llenarFormulario(VehiculoDAO vehiculo) {
         etMarca.setText(vehiculo.getMarca());
         etAnio.setText(vehiculo.getAño());
         etPlaca.setText(vehiculo.getPlaca());
@@ -79,30 +78,30 @@ public class VistaVehiculo extends AppCompatActivity {
         etKilometraje.setText(String.valueOf(vehiculo.getKilometraje()));
     }
 
-    private void guardarVehiculo() {
-        vehiculo.setMarca(etMarca.getText().toString());
-        vehiculo.setAño(etAnio.getText().toString());
-        vehiculo.setPlaca(etPlaca.getText().toString());
-        vehiculo.setTipo(etTipo.getText().toString());
+    private void guardar() {
+        modelo.setMarca(etMarca.getText().toString());
+        modelo.setAño(etAnio.getText().toString());
+        modelo.setPlaca(etPlaca.getText().toString());
+        modelo.setTipo(etTipo.getText().toString());
 
         try {
-            vehiculo.setKilometraje(Integer.parseInt(etKilometraje.getText().toString()));
+            modelo.setKilometraje(Integer.parseInt(etKilometraje.getText().toString()));
         } catch (NumberFormatException e) {
-            vehiculo.setKilometraje(0);
+            modelo.setKilometraje(0);
         }
 
-        if (vehiculo.getId() > 0) {
+        if (modelo.getId() > 0) {
             // Actualizar
-            if (vehiculoController.actualizarVehiculo(vehiculo) > 0) {
+            if (controlador.actualizar(modelo) > 0) {
                 Toast.makeText(this, "Registro Actualizado", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "Error al actualizar", Toast.LENGTH_SHORT).show();
             }
         } else {
             // Crear nuevo
-            long id = vehiculoController.agregarVehiculo(vehiculo);
+            long id = controlador.agregar(modelo);
             if (id > 0) {
-                vehiculo.setId((int) id);
+                modelo.setId((int) id);
                 Toast.makeText(this, "Registro Exitoso", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "Error al guardar", Toast.LENGTH_SHORT).show();
@@ -120,7 +119,7 @@ public class VistaVehiculo extends AppCompatActivity {
         etKilometraje.setText("");
         btnAction.setText("Guardar");
         btnEliminar.setVisibility(View.GONE);
-        vehiculo = new Vehiculo();
+        modelo = new VehiculoDAO();
     }
 
 }
