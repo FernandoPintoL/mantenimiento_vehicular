@@ -7,15 +7,14 @@ import com.fpl.mantenimientovehicular.model.ModeloVehiculo;
 import java.util.List;
 
 public class VehiculoController {
-    private ModeloVehiculo modeloVehiculo;
+    private final ModeloVehiculo modeloVehiculo;
 
     public VehiculoController(Context context) {
         modeloVehiculo = new ModeloVehiculo(context);
-        modeloVehiculo.open();
     }
 
-    public long agregar(ModeloVehiculo vehiculo) {
-        return modeloVehiculo.agregar(vehiculo);
+    public long agregar(ModeloVehiculo model) {
+        return modeloVehiculo.agregar(model);
     }
 
     public List<ModeloVehiculo> obtenerTodos() {
@@ -26,8 +25,8 @@ public class VehiculoController {
         return modeloVehiculo.obtenerPorId(id);
     }
 
-    public int actualizar(ModeloVehiculo vehiculo) {
-        return modeloVehiculo.actualizar(vehiculo);
+    public int actualizar(ModeloVehiculo model) {
+        return modeloVehiculo.actualizar(model);
     }
 
     public boolean eliminar(int id) {

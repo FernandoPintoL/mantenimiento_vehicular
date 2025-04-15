@@ -24,6 +24,7 @@
         <activity android:name=".vista.VistaVehiculo" />
         <activity android:name=".vista.VistaMecanico" />
         <activity android:name=".vista.VistaItem" />
+        <activity android:name=".vista.VistaMantenimiento" />
     </application>
 
 </manifest>

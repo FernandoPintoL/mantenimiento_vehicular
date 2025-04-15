@@ -20,11 +20,12 @@ public class ModeloMecanico {
     private String direccion;
     private static DataBaseHelper dbHelper;
     private static SQLiteDatabase db;
-    private String table = "mecanico";
+    private String table = "Mecanico";
     public ModeloMecanico() {
     }
     public ModeloMecanico(Context context) {
         dbHelper = new DataBaseHelper(context);
+        db = dbHelper.getWritableDatabase();
     }
     public ModeloMecanico(int id, String nombre, String telefono, String direccion) {
         this.id = id;

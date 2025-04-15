@@ -30,7 +30,7 @@ public class VistaVehiculo extends AppCompatActivity {
         setContentView(R.layout.activity_vehiculo_main);
 
         controlador = new VehiculoController(this);
-        modelo = new ModeloVehiculo(this);
+        modelo = new ModeloVehiculo();
 
         etMarca = findViewById(R.id.etMarca);
         etAnho = findViewById(R.id.etAnho);

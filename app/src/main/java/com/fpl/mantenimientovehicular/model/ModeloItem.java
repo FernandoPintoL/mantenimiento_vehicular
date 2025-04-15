@@ -16,10 +16,14 @@ public class ModeloItem {
     private String nombre;
     private double precio;
     private String detalle;
-    private String table = "item";
+    private String table = "Item";
     private static DataBaseHelper dbHelper;
     private static SQLiteDatabase db;
     public ModeloItem() {
+    }
+    public ModeloItem(Context context){
+        dbHelper = new DataBaseHelper(context);
+        db = dbHelper.getWritableDatabase();
     }
     public ModeloItem(int id, String nombre, double precio, String detalle) {
         this.id = id;
@@ -154,6 +158,4 @@ public class ModeloItem {
     public void setDetalle(String detalle) {
         this.detalle = detalle;
     }
-
-
 }

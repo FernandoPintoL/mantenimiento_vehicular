@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.fpl.mantenimientovehicular.R;
 import com.fpl.mantenimientovehicular.controller.ItemController;
 import com.fpl.mantenimientovehicular.model.ModeloItem;
+import com.fpl.mantenimientovehicular.model.ModeloMecanico;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ public class VistaItem extends AppCompatActivity {
     private ModeloItem modelo;
     private List<ModeloItem> listado;
     private ListView listView;
-    private Button btnAction, btnEliminar;
+    private Button btnAction, btnEliminar, btnListar;
     private EditText etNombre, etPrecio, etDetalle;
     @Override
     public void onCreate( Bundle savedInstanceState) {
@@ -31,7 +32,6 @@ public class VistaItem extends AppCompatActivity {
 
         controlador = new ItemController(this);
         modelo = new ModeloItem();
-        modelo.initDatabase(this);
 
         etNombre = findViewById(R.id.etNombre);
         etPrecio = findViewById(R.id.etPrecio);
@@ -63,7 +63,7 @@ public class VistaItem extends AppCompatActivity {
         // Crear una lista de cadenas con la información que deseas mostrar
         List<String> modelInfos = new ArrayList<>();
         for (ModeloItem model : listado) {
-            modelInfos.add("ID: "+model.getId()+" Nombre: "+model.getNombre()+" Precio: "+model.getPrecio() + " Detalle: " + model.getDetalle());
+            modelInfos.add("ID: "+model.getId()+" Nombre: "+model.getNombre()+" Precio : "+model.getPrecio() + " Detalle: " + model.getDetalle());
         }
         // Usar un ArrayAdapter simple para mostrar la información
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, modelInfos);

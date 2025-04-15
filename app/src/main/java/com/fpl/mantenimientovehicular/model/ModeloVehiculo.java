@@ -18,16 +18,16 @@ public class ModeloVehiculo {
     private String placa;
     private String tipo;
     private int kilometraje;
-    private DataBaseHelper dbHelper;
-    private SQLiteDatabase db;
-    private String table = "vehiculos";
+    private static DataBaseHelper dbHelper;
+    private static SQLiteDatabase db;
+    private String table = "Vehiculo";
     public ModeloVehiculo() {
     }
     public ModeloVehiculo(Context context) {
         dbHelper = new DataBaseHelper(context);
+        db = dbHelper.getWritableDatabase();
     }
-    public ModeloVehiculo(Context context, int id, String marca, String anho, String placa, String tipo, int kilometraje) {
-        dbHelper = new DataBaseHelper(context);
+    public ModeloVehiculo(int id, String marca, String anho, String placa, String tipo, int kilometraje) {
         this.id = id;
         this.marca = marca;
         this.anho = anho;
@@ -41,9 +41,14 @@ public class ModeloVehiculo {
     public void close() {
         dbHelper.close();
     }
+    public static void initDatabase(Context context) {
+        dbHelper = new DataBaseHelper(context);
+        db = dbHelper.getWritableDatabase();
+    }
     // CREATE
     public long agregar(ModeloVehiculo vehiculo) {
-        try(SQLiteDatabase db = dbHelper.getWritableDatabase()) {
+//        try(SQLiteDatabase db = dbHelper.getWritableDatabase()) {
+        try{
             ContentValues values = new ContentValues();
             values.put("marca", vehiculo.getMarca());
             values.put("anho", vehiculo.getAño());
@@ -57,10 +62,28 @@ public class ModeloVehiculo {
         }
 
     }
+    // UPDATE
+    public int actualizar(ModeloVehiculo vehiculo) {
+//        try(SQLiteDatabase db = dbHelper.getWritableDatabase()){
+        try {
+            ContentValues values = new ContentValues();
+            values.put("marca", vehiculo.getMarca());
+            values.put("anho", vehiculo.getAño());
+            values.put("placa", vehiculo.getPlaca());
+            values.put("tipo", vehiculo.getTipo());
+            values.put("kilometraje", vehiculo.getKilometraje());
+
+            return db.update(table, values, "id = ?",
+                    new String[]{String.valueOf(vehiculo.getId())});
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
     // READ (Todos los vehículos)
     @SuppressLint("Range")
     public List<ModeloVehiculo> obtenerTodos() {
-        try(SQLiteDatabase db = dbHelper.getWritableDatabase()){
+//        try(SQLiteDatabase db = dbHelper.getWritableDatabase()){
+        try {
             List<ModeloVehiculo> vehiculos = new ArrayList<>();
             Cursor cursor = db.query(table, null, null, null, null, null, null);
 
@@ -85,7 +108,8 @@ public class ModeloVehiculo {
     // READ (Un vehículo por ID)
     @SuppressLint("Range")
     public ModeloVehiculo obtenerPorId(int id) {
-        try (SQLiteDatabase db = dbHelper.getWritableDatabase()){
+//        try (SQLiteDatabase db = dbHelper.getWritableDatabase()){
+        try {
             Cursor cursor = db.query(table, null, "id = ?",
                     new String[]{String.valueOf(id)}, null, null, null);
 
@@ -105,31 +129,17 @@ public class ModeloVehiculo {
             throw new RuntimeException(e);
         }
     }
-    // UPDATE
-    public int actualizar(ModeloVehiculo vehiculo) {
-        try(SQLiteDatabase db = dbHelper.getWritableDatabase()){
-            ContentValues values = new ContentValues();
-            values.put("marca", vehiculo.getMarca());
-            values.put("anho", vehiculo.getAño());
-            values.put("placa", vehiculo.getPlaca());
-            values.put("tipo", vehiculo.getTipo());
-            values.put("kilometraje", vehiculo.getKilometraje());
-
-            return db.update(table, values, "id = ?",
-                    new String[]{String.valueOf(vehiculo.getId())});
-        }catch (Exception e){
-            throw new RuntimeException(e);
-        }
-    }
     // DELETE
     public int eliminar(int id) {
-        try(SQLiteDatabase db = dbHelper.getWritableDatabase()){
+//        try(SQLiteDatabase db = dbHelper.getWritableDatabase()){
+        try {
             return db.delete(table, "id = ?",
                     new String[]{String.valueOf(id)});
         }catch (Exception e){
             throw new RuntimeException(e);
         }
     }
+
     public int getId() {
         return id;
     }

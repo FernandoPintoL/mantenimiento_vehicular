@@ -11,6 +11,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="16dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mantenimiento Vehicular"
+            android:layout_marginBottom="8dp"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
         <Button
             android:id="@+id/btnGestionarVehiculos"
             android:layout_width="wrap_content"
@@ -35,6 +42,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Gestión de Items"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <Button
+            android:id="@+id/btnGestionarMantenimientos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gestión de Mantenimientos"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

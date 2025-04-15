@@ -31,8 +31,7 @@ public class VistaMecanico extends AppCompatActivity {
         setContentView(R.layout.activity_mecanico_main);
 
         controlador = new MecanicoController(this);
-        modelo = new ModeloMecanico(this);
-        modelo.initDatabase(this);
+        modelo = new ModeloMecanico();
 
         etNombre = findViewById(R.id.etNombre);
         etTaller = findViewById(R.id.etTaller);

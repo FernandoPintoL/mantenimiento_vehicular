@@ -10,6 +10,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.fpl.mantenimientovehicular.vista.VistaItem;
+import com.fpl.mantenimientovehicular.vista.VistaMantenimiento;
 import com.fpl.mantenimientovehicular.vista.VistaMecanico;
 import com.fpl.mantenimientovehicular.vista.VistaVehiculo;
 
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         Button btnVehiculos = findViewById(R.id.btnGestionarVehiculos);
         Button btnMecanicos = findViewById(R.id.btnGestionarMecanicos);
         Button btnItems = findViewById(R.id.btnGestionarItems);
+        Button btnMantenimientos = findViewById(R.id.btnGestionarMantenimientos);
         btnVehiculos.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, VistaVehiculo.class);
             startActivity(intent);
@@ -40,6 +42,10 @@ public class MainActivity extends AppCompatActivity {
         });
         btnItems.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, VistaItem.class);
+            startActivity(intent);
+        });
+        btnMantenimientos.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, VistaMantenimiento.class);
             startActivity(intent);
         });
     }

@@ -10,7 +10,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     // Sentencia SQL para crear la tabla de vehículos
     private static final String CREATE_TABLE_VEHICULOS =
-            "CREATE TABLE vehiculos (" +
+            "CREATE TABLE Vehiculo (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "marca TEXT NOT NULL, " +
                     "anho TEXT NOT NULL, " +
@@ -18,18 +18,40 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                     "tipo TEXT NOT NULL, " +
                     "kilometraje INTEGER NOT NULL);";
     private static final String CREATE_TABLE_MECANICO =
-            "CREATE TABLE mecanico (" +
+            "CREATE TABLE Mecanico (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "nombre TEXT NOT NULL, " +
                     "taller TEXT NOT NULL, " +
                     "direccion TEXT NOT NULL, " +
                     "telefono TEXT NOT NULL);";
     private static final String CREATE_TABLE_ITEM =
-            "CREATE TABLE item (" +
+            "CREATE TABLE Item (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "nombre TEXT NOT NULL, " +
                     "precio REAL NOT NULL, " +
                     "detalle TEXT NOT NULL); ";
+
+    private static final String CREATE_TABLE_MANTENIMIENTO =
+            "CREATE TABLE Mantenimiento (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "vehiculo_id INTEGER, " +
+                    "mecanico_id INTEGER, " +
+                    "fecha TEXT NOT NULL, " +
+                    "detalle TEXT NOT NULL, " +
+                    "costo_total REAL NOT NULL, " +
+                    "kilometraje REAL NOT NULL, " +
+                    "FOREIGN KEY(vehiculo_id) REFERENCES Vehiculo (id), " +
+                    "FOREIGN KEY(mecanico_id) REFERENCES Mecanico (id))";
+    private static final String CREATE_TABLE_DETALLE_MANTENIMIENTO =
+            "CREATE TABLE DetalleMantenimiento (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "mantenimiento_id INTEGER, " +
+                    "item_id INTEGER, " +
+                    "cantidad Real NOT NULL, " +
+                    "precio_unitario REAL NOT NULL, " +
+                    "subtotal REAL NOT NULL, " +
+                    "FOREIGN KEY(mantenimiento_id) REFERENCES Mantenimiento (id), " +
+                    "FOREIGN KEY(item_id) REFERENCES Item (id));";
 
     public DataBaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -41,14 +63,18 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_VEHICULOS);
         db.execSQL(CREATE_TABLE_MECANICO);
         db.execSQL(CREATE_TABLE_ITEM);
+        db.execSQL(CREATE_TABLE_MANTENIMIENTO);
+        db.execSQL(CREATE_TABLE_DETALLE_MANTENIMIENTO);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Handle database upgrade here
-        db.execSQL("DROP TABLE IF EXISTS vehiculos");
-        db.execSQL("DROP TABLE IF EXISTS mecanico");
-        db.execSQL("DROP TABLE IF EXISTS item");
+        db.execSQL("DROP TABLE IF EXISTS Vehiculo");
+        db.execSQL("DROP TABLE IF EXISTS Mecanico");
+        db.execSQL("DROP TABLE IF EXISTS Item");
+        db.execSQL("DROP TABLE IF EXISTS Mantenimiento");
+        db.execSQL("DROP TABLE IF EXISTS DetalleMantenimiento");
         onCreate(db);
     }
 }
