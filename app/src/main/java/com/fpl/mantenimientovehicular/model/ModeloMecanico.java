@@ -27,9 +27,10 @@ public class ModeloMecanico {
         dbHelper = new DataBaseHelper(context);
         db = dbHelper.getWritableDatabase();
     }
-    public ModeloMecanico(int id, String nombre, String telefono, String direccion) {
+    public ModeloMecanico(int id, String nombre, String taller, String direccion, String telefono) {
         this.id = id;
         this.nombre = nombre;
+        this.taller = taller;
         this.telefono = telefono;
         this.direccion = direccion;
     }

@@ -87,7 +87,7 @@ public class ModeloVehiculo {
             List<ModeloVehiculo> vehiculos = new ArrayList<>();
             Cursor cursor = db.query(table, null, null, null, null, null, null);
 
-            if (cursor.moveToFirst()) {
+            if (cursor != null && cursor.moveToFirst()) {
                 do {
                     ModeloVehiculo vehiculo = new ModeloVehiculo();
                     vehiculo.setId(cursor.getInt(cursor.getColumnIndex("id")));
@@ -113,7 +113,7 @@ public class ModeloVehiculo {
             Cursor cursor = db.query(table, null, "id = ?",
                     new String[]{String.valueOf(id)}, null, null, null);
 
-            if (cursor != null && cursor.moveToFirst()) {
+            if (cursor.moveToFirst()) {
                 ModeloVehiculo vehiculo = new ModeloVehiculo();
                 vehiculo.setId(cursor.getInt(cursor.getColumnIndex("id")));
                 vehiculo.setMarca(cursor.getString(cursor.getColumnIndex("marca")));

@@ -21,12 +21,12 @@ import com.fpl.mantenimientovehicular.R;
 import com.fpl.mantenimientovehicular.controller.ItemController;
 import com.fpl.mantenimientovehicular.controller.MantenimientoDetController;
 import com.fpl.mantenimientovehicular.controller.MecanicoController;
-import com.fpl.mantenimientovehicular.controller.VehiculoController;
 import com.fpl.mantenimientovehicular.model.ModeloDetalleMantenimiento;
 import com.fpl.mantenimientovehicular.model.ModeloItem;
 import com.fpl.mantenimientovehicular.model.ModeloMantenimiento;
 import com.fpl.mantenimientovehicular.model.ModeloMecanico;
 import com.fpl.mantenimientovehicular.model.ModeloVehiculo;
+import com.fpl.mantenimientovehicular.negocio.NegocioVehiculo;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ import java.util.Locale;
 
 public class VistaMantenimiento extends AppCompatActivity {
     private MantenimientoDetController mantenimientoDetController;
-    private VehiculoController vehiculoController;
+    private NegocioVehiculo negocioVehiculo;
     private ItemController itemController;
     private MecanicoController mecanicoController;
     private ModeloMantenimiento modeloMantenimiento;
@@ -48,7 +48,7 @@ public class VistaMantenimiento extends AppCompatActivity {
     private List<ModeloMantenimiento> listadoMantenimiento;
     private List<ModeloDetalleMantenimiento> listadoDetalleMantenimiento;
     private List<ModeloItem> listadoItem;
-    private List<ModeloVehiculo> listadoVehiculo;
+    private List<String> listadoVehiculo;
     private List<ModeloMecanico> listadoMecanico;
     private ListView listViewDetalleMantenimiento, listViewMantenimientos;
     private Button btnAction, btnListar, btnAñadir;
@@ -63,9 +63,7 @@ public class VistaMantenimiento extends AppCompatActivity {
         setContentView(R.layout.activity_mantenimiento_main);
 
         mantenimientoDetController = new MantenimientoDetController(this);
-        vehiculoController = new VehiculoController(this);
-        itemController = new ItemController(this);
-        mecanicoController = new MecanicoController(this);
+        negocioVehiculo = new NegocioVehiculo(this);
 
         modeloDetalleMantenimiento = new ModeloDetalleMantenimiento();
         modeloMantenimiento = new ModeloMantenimiento();
@@ -165,26 +163,14 @@ public class VistaMantenimiento extends AppCompatActivity {
         cargarMecanicos();
     }
     private void cargarVehiculos(){
-        listadoVehiculo = vehiculoController.obtenerTodos();
+        listadoVehiculo = negocioVehiculo.cargarDatos();
 
-        List<String> modelosVehiculos = new ArrayList<>();
-        for (ModeloVehiculo model : listadoVehiculo) {
-            modelosVehiculos.add("PLACA: "+model.getPlaca()+" / "+model.getTipo());
-        }
-
-        ArrayAdapter<String> adapterVehiculo = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, modelosVehiculos);
+        ArrayAdapter<String> adapterVehiculo = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, listadoVehiculo);
         adapterVehiculo.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spModVehiculo.setAdapter(adapterVehiculo);
-
-        if (!listadoVehiculo.isEmpty()) {
-            spModVehiculo.setSelection(0);
-            double kilometraje = listadoVehiculo.get(0).getKilometraje(); // Asume que retorna un double
-            etKilometraje.setText(String.valueOf(kilometraje)); // Convertir a String
-            vistaKilometraje.setVisibility(View.VISIBLE);
-        }
     }
     private void cargarItems(){
-        listadoItem = itemController.obtenerTodos();
+        //listadoItem = itemController.obtenerTodos();
         List<String> modelosItems = new ArrayList<>();
         for (ModeloItem model : listadoItem) {
             modelosItems.add(model.getNombre().toUpperCase()+" / "+model.getPrecio() + "Bs");
@@ -194,7 +180,7 @@ public class VistaMantenimiento extends AppCompatActivity {
         spModItem.setAdapter(adapterItem);
     }
     private void cargarMecanicos(){
-        listadoMecanico = mecanicoController.obtenerTodos();
+        //listadoMecanico = mecanicoController.obtenerTodos();
         List<String> modelosMecanicos = new ArrayList<>();
         for (ModeloMecanico model : listadoMecanico) {
             modelosMecanicos.add("Nom.: "+model.getNombre()+" Taller: "+model.getTaller());
@@ -343,79 +329,4 @@ public class VistaMantenimiento extends AppCompatActivity {
         vistaDetalleMantenimiento.setVisibility(View.GONE);
         modeloMantenimiento = new ModeloMantenimiento();
     }
-    /*
-    private void cargarVehiculoIdToMantenimiento(){
-        try {
-            // Obtener la posición seleccionada en el Spinner
-            int selectedPosition = spModVehiculo.getSelectedItemPosition();
-
-            if (selectedPosition >= 0 && selectedPosition < listadoVehiculo.size()) {
-                // Obtener el item seleccionado
-                ModeloVehiculo itemSeleccionado = listadoVehiculo.get(selectedPosition);
-                modeloMantenimiento.setVehiculo_id(itemSeleccionado.getId());
-            } else {
-                Toast.makeText(this, "Seleccione un vehiculo válido", Toast.LENGTH_SHORT).show();
-            }
-        } catch (NumberFormatException e) {
-            Toast.makeText(this, "Ingrese una cantidad válida", Toast.LENGTH_SHORT).show();
-        }
-    }
-    private void cargarMecanicoIdToMantenimiento(){
-        try {
-            // Obtener la posición seleccionada en el Spinner
-            int selectedPosition = spModMecanico.getSelectedItemPosition();
-
-            if (selectedPosition >= 0 && selectedPosition < listadoMecanico.size()) {
-                // Obtener el item seleccionado
-                ModeloMecanico itemSeleccionado = listadoMecanico.get(selectedPosition);
-                modeloMantenimiento.setMecanico_id(itemSeleccionado.getId());
-            } else {
-                Toast.makeText(this, "Seleccione un vehiculo válido", Toast.LENGTH_SHORT).show();
-            }
-        } catch (NumberFormatException e) {
-            Toast.makeText(this, "Ingrese una cantidad válida", Toast.LENGTH_SHORT).show();
-        }
-    }
-    private void cargarListadoDetalle(){
-        //cargar detalle mantenimiento
-        listadoDetalleMantenimiento = mantenimientoDetController.obtenerDetallesMantenimientos();
-        if (listadoDetalleMantenimiento.isEmpty()){
-            Toast.makeText(this, "No hay registros de mantenimientos", Toast.LENGTH_SHORT).show();
-        }
-
-        // Crear una lista de cadenas con la información que deseas mostrar
-        List<String> modelInfos = new ArrayList<>();
-        for (ModeloDetalleMantenimiento model : listadoDetalleMantenimiento) {
-            modelInfos.add("ID-Item: "+model.getId()+" Cantidad: "+model.getCantidad()+" Precio: "+model.getPrecio_unitario() + " Subtotal: " + model.getSubtotal());
-            // Usar un ArrayAdapter simple para mostrar la información
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, modelInfos);
-            listViewDetalleMantenimiento.setAdapter(adapter);
-        }
-    }
-    private void eliminar(){
-        if (modeloMantenimiento.getId() > 0) {
-            if (mantenimientoDetController.eliminarMantenimiento(modeloMantenimiento.getId())) {
-                Toast.makeText(this, "Registro Eliminado", Toast.LENGTH_SHORT).show();
-                limpiarFormulario();
-            } else {
-                Toast.makeText(this, "Error al eliminar", Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            Toast.makeText(this, "Seleccione un registro para eliminar", Toast.LENGTH_SHORT).show();
-        }
-        obtenerMantenimientos();
-    }
-    private void llenarFormulario(ModeloMantenimiento modelo) {
-        etFecha.setText(modelo.getFecha());
-        etKilometraje.setText(String.valueOf(modelo.getKilometraje()));
-        etDetalle.setText(modelo.getDetalle());
-        cargarMecanicoIdToMantenimiento();
-        cargarVehiculoIdToMantenimiento();
-        cargarListadoDetalle();
-
-        if (modelo.getId() > 0) {
-            btnAction.setText("Editar");
-//            btnEliminar.setVisibility(View.VISIBLE);
-        }
-    }*/
 }

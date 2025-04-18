@@ -5,7 +5,9 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,110 +16,110 @@ import com.fpl.mantenimientovehicular.R;
 import com.fpl.mantenimientovehicular.controller.ItemController;
 import com.fpl.mantenimientovehicular.model.ModeloItem;
 import com.fpl.mantenimientovehicular.model.ModeloMecanico;
+import com.fpl.mantenimientovehicular.negocio.NegocioItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class VistaItem extends AppCompatActivity {
+    private NegocioItem negocio;
     private ItemController controlador;
-    private ModeloItem modelo;
-    private List<ModeloItem> listado;
+    private List<String> listado;
     private ListView listView;
-    private Button btnAction, btnEliminar, btnListar;
+    private Button btnGuardar, btnEditar, btnEliminar, btnListar;
     private EditText etNombre, etPrecio, etDetalle;
+    private LinearLayout btnsActions;
+    private TextView idItem;
     @Override
     public void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_main);
-
-        controlador = new ItemController(this);
-        modelo = new ModeloItem();
+        negocio = new NegocioItem(this);
+        controlador = new ItemController(this, negocio);
 
         etNombre = findViewById(R.id.etNombre);
         etPrecio = findViewById(R.id.etPrecio);
         etDetalle = findViewById(R.id.etDetalle);
-        btnAction = findViewById(R.id.btnActionItem);
+        btnGuardar = findViewById(R.id.btnGuardarItem);
+        btnEditar = findViewById(R.id.btnEditarItem);
         btnEliminar = findViewById(R.id.btnEliminarItem);
+        btnListar = findViewById(R.id.btnListarItem);
         listView = findViewById(R.id.listViewRespuestos);
+        btnsActions = findViewById(R.id.btnsActionsItems);
+        idItem = findViewById(R.id.idItem);
 
-        listView.setOnItemClickListener((parent, view, position, id) -> {
-            btnAction.setText("Editar");
-            modelo = listado.get(position);
-            llenarFormulario(modelo);
-            btnEliminar.setVisibility(View.VISIBLE);
-        });
-        btnAction.setOnClickListener(v -> ejecutarAccion());
-        btnEliminar.setOnClickListener( v -> eliminar());
-        obtenerTodos();
+        controlador.initEvents();
+        cargarDatosToList();
     }
     @Override
     protected void onResume() {
         super.onResume();
-        obtenerTodos();
+        cargarDatosToList();
     }
-    private void obtenerTodos() {
-        listado = controlador.obtenerTodos();
-        if (listado.isEmpty()){
-            Toast.makeText(this, "No hay registros", Toast.LENGTH_SHORT).show();
-        }
-        // Crear una lista de cadenas con la información que deseas mostrar
-        List<String> modelInfos = new ArrayList<>();
-        for (ModeloItem model : listado) {
-            modelInfos.add("ID: "+model.getId()+" Nombre: "+model.getNombre()+" Precio : "+model.getPrecio() + " Detalle: " + model.getDetalle());
-        }
-        // Usar un ArrayAdapter simple para mostrar la información
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, modelInfos);
-        listView.setAdapter(adapter);
-    }
-    private void llenarFormulario(ModeloItem modelo) {
-        etNombre.setText(modelo.getNombre());
-        etPrecio.setText(String.valueOf(modelo.getPrecio()));
-        etDetalle.setText(modelo.getDetalle());
-    }
-    private void ejecutarAccion() {
-        modelo.setNombre(etNombre.getText().toString());
-        modelo.setPrecio(Double.parseDouble(etPrecio.getText().toString()));
-        modelo.setDetalle(etDetalle.getText().toString());
-
-        if (modelo.getId() > 0) {
-            // Actualizar
-            if (controlador.actualizar(modelo) > 0) {
-                Toast.makeText(this, "Registro Actualizado", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Error al actualizar", Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            // Crear nuevo
-            long id = controlador.agregar(modelo);
-            if (id > 0) {
-                modelo.setId((int) id);
-                Toast.makeText(this, "Registro Exitoso", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Error al guardar", Toast.LENGTH_SHORT).show();
-            }
-        }
-        obtenerTodos();
-        limpiarFormulario();
-    }
-    private void limpiarFormulario() {
+    public void limpiarFormulario() {
         etNombre.setText("");
         etPrecio.setText("");
         etDetalle.setText("");
-        btnAction.setText("Guardar");
-        btnEliminar.setVisibility(View.GONE);
-        modelo = new ModeloItem();
+        idItem.setText("");
+        btnGuardar.setVisibility(View.VISIBLE);
+        btnsActions.setVisibility(View.GONE);
     }
-    private void eliminar(){
-        if (modelo.getId() > 0) {
-            if (controlador.eliminar(modelo.getId())) {
-                Toast.makeText(this, "Registro Eliminado", Toast.LENGTH_SHORT).show();
-                limpiarFormulario();
-            } else {
-                Toast.makeText(this, "Error al eliminar", Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            Toast.makeText(this, "Seleccione un registro para eliminar", Toast.LENGTH_SHORT).show();
+    public void cargarDatosToList() {
+        listado = negocio.cargarDatos();
+        if (listado.isEmpty()) {
+            mostrarMensaje("No hay datos para mostrar");
         }
-        obtenerTodos();
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listado);
+        listView.setAdapter(adapter);
     }
+    public void mostrarMensaje(String mensaje) {
+        Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show();
+    }
+    public List<String> listados(){
+        return listado;
+    }
+    public ListView getListView() {
+        return listView;
+    }
+    public LinearLayout getBtnsAction() {
+        return btnsActions;
+    }
+    public Button getBtnGuardar() {
+        return btnGuardar;
+    }
+    public Button getBtnEditar() {
+        return btnEditar;
+    }
+    public Button getBtnEliminar() {
+        return btnEliminar;
+    }
+    public Button getBtnListar() {
+        return btnListar;
+    }
+    public EditText getEtNombre() {
+        return etNombre;
+    }
+    public EditText getEtPrecio() {
+        return etPrecio;
+    }
+    public EditText getEtDetalle() {
+        return etDetalle;
+    }
+    public TextView getIdItem() {
+        return idItem;
+    }
+    public void setNombre(String nombre) {
+        etNombre.setText(nombre);
+    }
+    public void setPrecio(String precio) {
+        etPrecio.setText(precio);
+    }
+    public void setDetalle(String detalle) {
+        etDetalle.setText(detalle);
+    }
+    public void setIdItem(String id) {
+        idItem.setText(id);
+    }
+
+
 }

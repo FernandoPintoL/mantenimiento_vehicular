@@ -13,9 +13,9 @@ import java.util.List;
 
 public class ModeloItem {
     private int id;
-    private String nombre;
-    private double precio;
-    private String detalle;
+    private String nombre; // Cambio de aceite
+    private double precio; // 15 - 50
+    private String detalle; // para moto mantenimiento
     private String table = "Item";
     private static DataBaseHelper dbHelper;
     private static SQLiteDatabase db;
@@ -60,7 +60,6 @@ public class ModeloItem {
     // READ (Todos los vehículos)
     @SuppressLint("Range")
     public List<ModeloItem> obtenerTodos() {
-//        try(SQLiteDatabase db = dbHelper.getWritableDatabase()) {
         try{
             if (db == null) {
                 throw new Exception("Error al abrir la base de datos");

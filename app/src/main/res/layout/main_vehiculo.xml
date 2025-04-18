@@ -11,7 +11,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Gestion de Vehiculo"
+            android:text="Activity Vehiculo"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
@@ -19,14 +19,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <TextView
-                android:id="@+id/idVehiculo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""/>
 
             <EditText
-                android:id="@+id/etPlaca"
+                android:id="@+id/etsPlaca"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Placa"
@@ -34,14 +29,14 @@
                 android:layout_marginTop="8dp" />
 
             <EditText
-                android:id="@+id/etMarca"
+                android:id="@+id/etsMarca"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Marca"
                 android:inputType="text" />
 
             <EditText
-                android:id="@+id/etAnho"
+                android:id="@+id/etsAnho"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Año"
@@ -49,63 +44,39 @@
                 android:layout_marginTop="8dp" />
 
             <EditText
-                android:id="@+id/etTipo"
+                android:id="@+id/etsTipo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Tipo (Moto Cicleta, Automovil)"
                 android:inputType="text"
                 android:layout_marginTop="8dp" />
+
             <EditText
-                android:id="@+id/etKilometraje"
+                android:id="@+id/etsKilometraje"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Kilometraje"
                 android:inputType="number"
                 android:layout_marginTop="8dp" />
+
             <Button
-                android:id="@+id/btnGuardarVehiculo"
+                android:id="@+id/btnsActionVehiculo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Guardar"
                 android:layout_marginTop="16dp" />
-            <LinearLayout
-                android:id="@+id/btnsActionsVehiculos"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:visibility="gone">
-                <Button
-                    android:id="@+id/btnEditarVehiculo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Editar"
-                    android:visibility="visible" />
-
-                <Button
-                    android:id="@+id/btnEliminarVehiculo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Eliminar"
-                    android:layout_marginLeft="10dp"
-                    android:visibility="visible" />
-            </LinearLayout>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="end">
 
             <Button
-                android:id="@+id/btnListarVehiculo"
-                android:layout_width="wrap_content"
+                android:id="@+id/btnsEliminarVehiculo"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Listar"
-                android:visibility="visible" />
+                android:text="Eliminar"
+                android:layout_marginTop="8dp"
+                android:visibility="gone" />
         </LinearLayout>
 
         <ListView
-            android:id="@+id/listViewVehiculos"
+            android:id="@+id/listsViewVehiculos"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="16dp" />
