@@ -17,12 +17,23 @@ public class NegocioVehiculo {
         List<ModeloVehiculo> datos = modelo.obtenerTodos();
         List<String> listado = new ArrayList<>();
         for (ModeloVehiculo vehiculo : datos) {
-            listado.add("ID: "+vehiculo.getId()+" Placa: "+vehiculo.getPlaca()+" Marca: "+vehiculo.getMarca() + " Tipo: " + vehiculo.getTipo()+" Año: "+vehiculo.getAño()+" Kilometraje: "+vehiculo.getKilometraje());
+            listado.add("ID: "+vehiculo.getId()+" Placa: "+vehiculo.getPlaca()+" Marca: "+vehiculo.getMarca() + " Tipo: " + vehiculo.getTipo()+" Año: "+vehiculo.getAño()+" Kilometraje Inicial: "+vehiculo.getKilometrajeActual()+" Kilometraje Esperado: "+vehiculo.getKilometrajeEsperado());
         }
         return listado;
     }
-    public void cargarFormulario(int id, String placa, String marca, String anho, String tipo, int kilometraje){
-        modelo = new ModeloVehiculo(id, placa, marca, anho, tipo, kilometraje);
+    public List<String> cargarDatosToSelect(){
+        List<ModeloVehiculo> datos = modelo.obtenerTodos();
+        List<String> listado = new ArrayList<>();
+        for (ModeloVehiculo vehiculo : datos) {
+            listado.add("Placa: "+vehiculo.getPlaca()+" | Tipo: " + vehiculo.getTipo());
+        }
+        return listado;
+    }
+    public List<ModeloVehiculo> obtenerTodos(){
+        return modelo.obtenerTodos();
+    }
+    public void cargarFormulario(int id, String placa, String marca, String anho, String tipo, int kilometrajeActual, int kilometrajeEsperado){
+        modelo = new ModeloVehiculo(id, placa, marca, anho, tipo, kilometrajeActual, kilometrajeEsperado);
     }
     public long agregar(){
         return modelo.agregar(modelo);
@@ -34,6 +45,9 @@ public class NegocioVehiculo {
         int id = obtenerIdPorPosicion();
         modelo.setId(id);
         return modelo.actualizar(modelo);
+    }
+    public int actualizarKilometrajes(int id, int kilometrajeActual, int kilometrajeEsperado){
+        return modelo.actualizarKilometrajes(id, kilometrajeActual, kilometrajeEsperado);
     }
     public int obtenerIdPorPosicion(){
         List<ModeloVehiculo> datos = modelo.obtenerTodos();

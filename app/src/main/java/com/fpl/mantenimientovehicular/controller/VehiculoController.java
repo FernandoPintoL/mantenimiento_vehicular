@@ -1,5 +1,7 @@
 package com.fpl.mantenimientovehicular.controller;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 
@@ -57,6 +59,27 @@ public class VehiculoController {
             negocio.setPosicion(position);
             cargarFormToList();
         });
+        vista.getEtKilometrajeActual().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+                try {
+                    // Obtener el valor del EditTextKilometrajeActual
+                    int kilometrajeActual = Integer.parseInt(s.toString());
+                    // Incrementar 5000 y establecer el valor en EditTextKilometrajeObjetivo
+                    int kilometrajeObjetivo = kilometrajeActual + 5000;
+                    vista.getEtKilometrajeEsperado().setText(String.valueOf(kilometrajeObjetivo));
+                } catch (NumberFormatException e) {
+                    // Manejar el caso en que el texto no sea un número válido
+                    vista.getEtKilometrajeEsperado().setText("");
+                }
+            }
+        });
         vista.cargarDatosToList();
         vista.limpiarFormulario();
     }
@@ -65,8 +88,9 @@ public class VehiculoController {
         String anho = vista.getEtAnho().getText().toString();
         String placa = vista.getEtPlaca().getText().toString();
         String tipo = vista.getEtTipo().getText().toString();
-        int kilometraje = Integer.parseInt(vista.getEtKilometraje().getText().toString());
-        negocio.cargarFormulario(0, marca, anho, placa, tipo, kilometraje);
+        int kilometrajeActual = Integer.parseInt(vista.getEtKilometrajeActual().getText().toString());
+        int kilometrajeEsperado = Integer.parseInt(vista.getEtKilometrajeEsperado().getText().toString());
+        negocio.cargarFormulario(0, marca, anho, placa, tipo, kilometrajeActual, kilometrajeEsperado);
     }
     public void cargarFormToList() {
         if(negocio.getPosicion() == -1) return;
@@ -75,6 +99,7 @@ public class VehiculoController {
         vista.setEtAnho(negocio.obtenerModeloPorPosicion().getAño());
         vista.setEtPlaca(negocio.obtenerModeloPorPosicion().getPlaca());
         vista.setEtTipo(negocio.obtenerModeloPorPosicion().getTipo());
-        vista.setEtKilometraje(String.valueOf(negocio.obtenerModeloPorPosicion().getKilometraje()));
+        vista.setEtKilometrajeActual(String.valueOf(negocio.obtenerModeloPorPosicion().getKilometrajeActual()));
+        vista.setEtKilometrajeEsperado(String.valueOf(negocio.obtenerModeloPorPosicion().getKilometrajeEsperado()));
     }
 }

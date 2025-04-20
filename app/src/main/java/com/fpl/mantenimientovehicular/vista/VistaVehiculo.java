@@ -24,7 +24,7 @@ public class VistaVehiculo extends AppCompatActivity {
     private List<String> listado;
     private ListView listView;
     private Button btnGuardar, btnEliminar, btnEditar;
-    private EditText etMarca, etAnho, etPlaca, etTipo, etKilometraje;
+    private EditText etMarca, etAnho, etPlaca, etTipo, etKilometrajeActual, etKilometrajeEsperado;
     private TextView idVehiculo;
     private LinearLayout btnsAction;
     @Override
@@ -39,7 +39,8 @@ public class VistaVehiculo extends AppCompatActivity {
         etAnho = findViewById(R.id.etAnho);
         etPlaca = findViewById(R.id.etPlaca);
         etTipo = findViewById(R.id.etTipo);
-        etKilometraje = findViewById(R.id.etKilometraje);
+        etKilometrajeActual = findViewById(R.id.etKilometrajeActual);
+        etKilometrajeEsperado = findViewById(R.id.etKilometrajeEsperado);
         idVehiculo = findViewById(R.id.idVehiculo);
         btnGuardar = findViewById(R.id.btnGuardarVehiculo);
         btnEditar = findViewById(R.id.btnEditarVehiculo);
@@ -73,7 +74,8 @@ public class VistaVehiculo extends AppCompatActivity {
         etAnho.setText("");
         etPlaca.setText("");
         etTipo.setText("");
-        etKilometraje.setText("");
+        etKilometrajeActual.setText("");
+        etKilometrajeEsperado.setText("");
         idVehiculo.setText("");
         btnsAction.setVisibility(View.GONE);
     }
@@ -110,8 +112,11 @@ public class VistaVehiculo extends AppCompatActivity {
     public EditText getEtTipo() {
         return etTipo;
     }
-    public EditText getEtKilometraje() {
-        return etKilometraje;
+    public EditText getEtKilometrajeActual() {
+        return etKilometrajeActual;
+    }
+    public EditText getEtKilometrajeEsperado() {
+        return etKilometrajeEsperado;
     }
     public void setEtMarca(String marca) {
         etMarca.setText(marca);
@@ -123,10 +128,13 @@ public class VistaVehiculo extends AppCompatActivity {
     public void setEtTipo(String tipo) {
         etTipo.setText(tipo);
     }
-    public void setEtKilometraje(String kilometraje) {
-        etKilometraje.setText(kilometraje);
+    public void setEtKilometrajeActual(String kilometraje) {
+        etKilometrajeActual.setText(kilometraje);
     }
     public void setIdVehiculo(String id) {idVehiculo.setText(id);}
+    public void setEtKilometrajeEsperado(String kilometraje) {
+        etKilometrajeEsperado.setText(kilometraje);
+    }
     public String getIdVehiculo() {
         return idVehiculo.getText().toString();
     }

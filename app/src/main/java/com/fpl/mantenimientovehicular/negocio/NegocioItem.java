@@ -18,7 +18,7 @@ public class NegocioItem {
         List<ModeloItem> datos = modelo.obtenerTodos();
         List<String> listado = new ArrayList<>();
         for (ModeloItem vehiculo : datos) {
-            listado.add(vehiculo.getNombre()+ " Det.: "+vehiculo.getDetalle() + " - " + vehiculo.getPrecio());
+            listado.add(vehiculo.getNombre()+ " | Det.: "+vehiculo.getDetalle() + " - Precio: " + vehiculo.getPrecio());
         }
         return listado;
     }

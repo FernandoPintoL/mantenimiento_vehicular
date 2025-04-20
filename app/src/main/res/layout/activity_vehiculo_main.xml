@@ -56,10 +56,17 @@
                 android:inputType="text"
                 android:layout_marginTop="8dp" />
             <EditText
-                android:id="@+id/etKilometraje"
+                android:id="@+id/etKilometrajeActual"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Kilometraje"
+                android:hint="Kilometraje Actual"
+                android:inputType="number"
+                android:layout_marginTop="8dp" />
+            <EditText
+                android:id="@+id/etKilometrajeEsperado"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Kilometraje para proximo Mantenimiento"
                 android:inputType="number"
                 android:layout_marginTop="8dp" />
             <Button

@@ -26,37 +26,24 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+
                 <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Seleccione una fecha" />
 
-                    <Button
-                        android:id="@+id/btnActionMantenimiento"
+                    <EditText
+                        android:id="@+id/etFecha"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="2dp"
-                        android:text="Guardar"
-                        android:visibility="gone" />
-
-                    <Button
-                        android:id="@+id/btnEliminarMantenimiento"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="4dp"
-                        android:text="Eliminar"
-                        android:visibility="gone" />
-
-                    <Button
-                        android:id="@+id/btnListarMantenimientos"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="4dp"
-                        android:paddingHorizontal="0dp"
-                        android:paddingVertical="0dp"
-                        android:text="Mantenimientos Registrados"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                        app:rippleColor="#9C27B0" />
+                        android:clickable="true"
+                        android:focusable="false"
+                        android:hint="Seleccione una Fecha"
+                        android:inputType="date" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -73,38 +60,34 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Seleccione una fecha" />
+                            android:text="Kilometraje Actual" />
 
                         <EditText
-                            android:id="@+id/etFecha"
+                            android:id="@+id/etKilometrajeActualMant"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:clickable="true"
-                            android:focusable="false"
-                            android:hint="Seleccione una Fecha"
-                            android:inputType="date" />
+                            android:hint="Kilometraje Actual"
+                            android:inputType="number" />
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/vistaKilometraje"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="7dp"
                         android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:visibility="gone">
+                        android:orientation="vertical">
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Kilometraje del Vehiculo" />
+                            android:text="Kilometraje Objetivo" />
 
                         <EditText
-                            android:id="@+id/etKilometraje"
+                            android:id="@+id/etKilometrajeObjetivoMant"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Kilometraje"
-                            android:inputType="numberDecimal" />
+                            android:hint="Kilometraje Objetivo"
+                            android:inputType="number" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -137,12 +120,20 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
+                        <LinearLayout
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Seleccione un Vehiculo" />
-
+                            android:orientation="horizontal">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Selec un Vehiculo: " />
+                            <TextView
+                                android:id="@+id/idVehiculo"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="" />
+                        </LinearLayout>
                         <Spinner
                             android:id="@+id/spModVehiculo"
                             android:layout_width="match_parent"
@@ -157,10 +148,20 @@
                         android:layout_weight="1"
                         android:orientation="vertical">
 
-                        <TextView
-                            android:layout_width="match_parent"
+                        <LinearLayout
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Seleccione Mecanico" />
+                            android:orientation="horizontal">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Selec Mecanico: " />
+                            <TextView
+                                android:id="@+id/idMecanico"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="" />
+                        </LinearLayout>
 
                         <Spinner
                             android:id="@+id/spModMecanico"
@@ -175,39 +176,98 @@
                     android:layout_height="1dp"
                     android:layout_marginVertical="8dp"
                     android:background="@android:color/darker_gray" />
-
-                <TextView
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Seleccione Items" />
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Seleccione Item: " />
+
+                    <TextView
+                        android:id="@+id/idItem"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="" />
+                </LinearLayout>
 
                 <Spinner
                     android:id="@+id/spModItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="8dp" />
-
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Cantidad" />
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
-                <EditText
-                    android:id="@+id/etCantidad"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Cantidad"
-                    android:inputType="numberDecimal" />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Cantidad" />
 
-                <Button
-                    android:id="@+id/btnAnhadirItem"
+                        <EditText
+                            android:id="@+id/etCantidad"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Cantidad"
+                            android:inputType="numberDecimal" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Precio Item" />
+
+                        <EditText
+                            android:id="@+id/etPrecioItem"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Precio Item"
+                            android:enabled="false"
+                            android:inputType="numberDecimal" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginRight="0dp"
-                    android:padding="1dp"
-                    android:text="Añadir Item" />
+                    android:orientation="horizontal">
+                    <Button
+                        android:id="@+id/btnAnhadirItem"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Añadir Item" />
+                    <Button
+                        android:id="@+id/btnGuardarMantenimiento"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Guardar"
+                        android:layout_marginLeft="10dp"
+                        android:visibility="gone" />
+                    <Button
+                        android:id="@+id/btnListarMantenimientos"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:text="Listar" />
+
+                </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
@@ -227,12 +287,21 @@
                         android:layout_height="wrap_content"
                         android:text="Detalle del Mantenimiento"
                         android:textAlignment="center" />
-                    <TextView
-                        android:id="@+id/txtTotal"
-                        android:layout_width="match_parent"
+                    <LinearLayout
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text=""
-                        android:textAlignment="textEnd" />
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Total: " />
+                        <TextView
+                            android:id="@+id/txtTotal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""/>
+                    </LinearLayout>
+
                     <ListView
                         android:id="@+id/listViewDetalleMantenimientos"
                         android:layout_width="match_parent"

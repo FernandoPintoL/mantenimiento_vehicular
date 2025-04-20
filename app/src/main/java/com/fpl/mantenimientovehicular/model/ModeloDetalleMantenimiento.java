@@ -23,20 +23,15 @@ public class ModeloDetalleMantenimiento {
     private String table = "DetalleMantenimiento";
     private static DataBaseHelper dbHelper;
     private static SQLiteDatabase db;
-
-    public ModeloDetalleMantenimiento() {
-    }
-
+    public ModeloDetalleMantenimiento() {}
     public ModeloDetalleMantenimiento(Context context) {
         dbHelper = new DataBaseHelper(context);
         db = dbHelper.getWritableDatabase();
     }
-
     public static void initDatabase(DataBaseHelper dbHelper) {
         ModeloDetalleMantenimiento.dbHelper = dbHelper;
         db = dbHelper.getWritableDatabase();
     }
-
     public ModeloDetalleMantenimiento(int id, int mantenimiento_id, int item_id, double precio_unitario, double cantidad, double subtotal) {
         this.id = id;
         this.mantenimiento_id = mantenimiento_id;
@@ -51,30 +46,26 @@ public class ModeloDetalleMantenimiento {
     public void close() {
         dbHelper.close();
     }
-
-    public long agregar(ModeloDetalleMantenimiento modelo) {
-//        try(SQLiteDatabase db = dbHelper.getWritableDatabase()) {
+    public long agregar() {
         try {
             if (db == null) {
                 throw new Exception("Error al abrir la base de datos");
             }
             ContentValues values = new ContentValues();
-            values.put("mantenimiento_id", modelo.getMantenimiento_id());
-            values.put("item_id", modelo.getItem_id());
-            values.put("cantidad", modelo.getCantidad());
-            values.put("precio_unitario", modelo.getPrecio_unitario());
-            values.put("subtotal", modelo.getSubtotal());
+            values.put("mantenimiento_id", getMantenimiento_id());
+            values.put("item_id", getItem_id());
+            values.put("cantidad", getCantidad());
+            values.put("precio_unitario", getPrecio_unitario());
+            values.put("subtotal", getSubtotal());
             return db.insert(table, null, values);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
     }
-
     // READ (Todos los vehículos)
     @SuppressLint("Range")
     public List<ModeloDetalleMantenimiento> obtenerTodos() {
-//        try(SQLiteDatabase db = dbHelper.getWritableDatabase()) {
         try {
             if (db == null) {
                 throw new Exception("Error al abrir la base de datos");
@@ -101,11 +92,9 @@ public class ModeloDetalleMantenimiento {
             throw new RuntimeException(e);
         }
     }
-
     // READ (Un vehículo por ID)
     @SuppressLint("Range")
     public ModeloDetalleMantenimiento obtenerPorId(int id) {
-//        try (SQLiteDatabase db = dbHelper.getWritableDatabase()){
         try {
             Cursor cursor = db.query(table, null, "id = ?",
                     new String[]{String.valueOf(id)}, null, null, null);
@@ -126,26 +115,8 @@ public class ModeloDetalleMantenimiento {
             throw new RuntimeException(e);
         }
     }
-
-    // UPDATE
-    public int actualizar(ModeloDetalleMantenimiento model) {
-//        try(SQLiteDatabase db = dbHelper.getWritableDatabase()){
-        try {
-            ContentValues values = new ContentValues();
-            values.put("cantidad", model.getCantidad());
-            values.put("precio_unitario", model.getPrecio_unitario());
-            values.put("subtotal", model.getSubtotal());
-
-            return db.update(table, values, "id = ?",
-                    new String[]{String.valueOf(model.getId())});
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     // DELETE
     public int eliminar(int id) {
-//        try (SQLiteDatabase db = dbHelper.getWritableDatabase()){
         try {
             if (db == null) {
                 throw new Exception("Error al abrir la base de datos");
@@ -164,43 +135,29 @@ public class ModeloDetalleMantenimiento {
     public void setId(int id) {
         this.id = id;
     }
-
     public int getMantenimiento_id() {
         return mantenimiento_id;
     }
-
-    public void setMantenimiento_id(int mantenimiento_id) {
-        this.mantenimiento_id = mantenimiento_id;
-    }
-
+    public void setMantenimiento_id(int mantenimiento_id) {this.mantenimiento_id = mantenimiento_id;}
     public int getItem_id() {
         return item_id;
     }
-
     public void setItem_id(int item_id) {
         this.item_id = item_id;
     }
-
     public double getPrecio_unitario() {
         return precio_unitario;
     }
-
-    public void setPrecio_unitario(double precio_unitario) {
-        this.precio_unitario = precio_unitario;
-    }
-
+    public void setPrecio_unitario(double precio_unitario) {this.precio_unitario = precio_unitario;}
     public double getCantidad() {
         return cantidad;
     }
-
     public void setCantidad(double cantidad) {
         this.cantidad = cantidad;
     }
-
     public double getSubtotal() {
         return subtotal;
     }
-
     public void setSubtotal(double subtotal) {
         this.subtotal = subtotal;
     }

@@ -5,7 +5,6 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,15 +17,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.fpl.mantenimientovehicular.R;
-import com.fpl.mantenimientovehicular.controller.ItemController;
 import com.fpl.mantenimientovehicular.controller.MantenimientoDetController;
-import com.fpl.mantenimientovehicular.controller.MecanicoController;
-import com.fpl.mantenimientovehicular.model.ModeloDetalleMantenimiento;
-import com.fpl.mantenimientovehicular.model.ModeloItem;
-import com.fpl.mantenimientovehicular.model.ModeloMantenimiento;
-import com.fpl.mantenimientovehicular.model.ModeloMecanico;
-import com.fpl.mantenimientovehicular.model.ModeloVehiculo;
-import com.fpl.mantenimientovehicular.negocio.NegocioVehiculo;
+import com.fpl.mantenimientovehicular.negocio.NegocioMantenimiento;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,40 +29,37 @@ import java.util.Locale;
 
 public class VistaMantenimiento extends AppCompatActivity {
     private MantenimientoDetController mantenimientoDetController;
-    private NegocioVehiculo negocioVehiculo;
-    private ItemController itemController;
-    private MecanicoController mecanicoController;
-    private ModeloMantenimiento modeloMantenimiento;
-    private ModeloDetalleMantenimiento modeloDetalleMantenimiento;
-    private ModeloVehiculo modeloVehiculo;
-    private ModeloItem modeloItem;
-    private ModeloMecanico modeloMecanico;
-    private List<ModeloMantenimiento> listadoMantenimiento;
-    private List<ModeloDetalleMantenimiento> listadoDetalleMantenimiento;
-    private List<ModeloItem> listadoItem;
-    private List<String> listadoVehiculo;
-    private List<ModeloMecanico> listadoMecanico;
+    private NegocioMantenimiento negocio;
+    private List<String> listadoItem, listadoVehiculo, listadoMecanico, listadoMantenimiento, listadoDetalleMantenimiento;
+    private ArrayAdapter<String> adapterMantenimientos, adapterMecanicos, adapterVehiculos, adapterItems, adapterDetalles;
     private ListView listViewDetalleMantenimiento, listViewMantenimientos;
-    private Button btnAction, btnListar, btnAñadir;
-    private EditText etFecha, etKilometraje, etDetalle, etCantidad;
+    private Button btnGuardar, btnListar, btnAñadir;
+    private EditText etFecha, etKilometrajeActual, etKilometrajeObjetivo, etDetalle, etCantidad, etPrecioItem;
     private Spinner spModVehiculo, spModMecanico, spModItem;
-    private Double total;
-    private TextView txtTotal, txtTitleMantenimientos;
-    private LinearLayout vistaDetalleMantenimiento, vistaKilometraje, vistaMantenimientos;
+    private TextView txtTotal, txtTitleMantenimientos, idVehiculo, idMecanico, idItem;
+    private LinearLayout vistaDetalleMantenimiento, vistaMantenimientos;
     @Override
     public void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mantenimiento_main);
 
-        mantenimientoDetController = new MantenimientoDetController(this);
-        negocioVehiculo = new NegocioVehiculo(this);
+        negocio = new NegocioMantenimiento(this);
+        mantenimientoDetController = new MantenimientoDetController(this, negocio);
 
-        modeloDetalleMantenimiento = new ModeloDetalleMantenimiento();
-        modeloMantenimiento = new ModeloMantenimiento();
+        listadoVehiculo = new ArrayList<>();
+        listadoMecanico = new ArrayList<>();
+        listadoItem = new ArrayList<>();
+        listadoMantenimiento = new ArrayList<>();
+        listadoDetalleMantenimiento = new ArrayList<>();
 
+        idItem = findViewById(R.id.idItem);
+        idMecanico = findViewById(R.id.idMecanico);
+        idVehiculo = findViewById(R.id.idVehiculo);
         etFecha = findViewById(R.id.etFecha);
-        etKilometraje = findViewById(R.id.etKilometraje);
+        etKilometrajeActual = findViewById(R.id.etKilometrajeActualMant);
+        etKilometrajeObjetivo = findViewById(R.id.etKilometrajeObjetivoMant);
         etDetalle = findViewById(R.id.etDetalleMantenimiento);
+        etPrecioItem = findViewById(R.id.etPrecioItem);
         spModVehiculo = findViewById(R.id.spModVehiculo);
         spModMecanico = findViewById(R.id.spModMecanico);
         spModItem = findViewById(R.id.spModItem);
@@ -78,15 +67,17 @@ public class VistaMantenimiento extends AppCompatActivity {
         txtTotal = findViewById(R.id.txtTotal);
         txtTitleMantenimientos = findViewById(R.id.txtTitleMantenimientos);
         vistaDetalleMantenimiento = findViewById(R.id.vistaDetalleMantenimiento);
-        vistaKilometraje = findViewById(R.id.vistaKilometraje);
         vistaMantenimientos = findViewById(R.id.vistaMantenimientos);
-        btnAction = findViewById(R.id.btnActionMantenimiento);
+        btnGuardar = findViewById(R.id.btnGuardarMantenimiento);
         btnListar = findViewById(R.id.btnListarMantenimientos);
         btnAñadir = findViewById(R.id.btnAnhadirItem);
         listViewMantenimientos = findViewById(R.id.listViewMantenimientos);
         listViewDetalleMantenimiento = findViewById(R.id.listViewDetalleMantenimientos);
 
-        spModItem.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mantenimientoDetController.initEvents();
+//        etFecha.setOnClickListener(v -> openDateTime());
+
+        /*spModItem.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(position >= 0 && position < listadoItem.size()) {
@@ -144,24 +135,260 @@ public class VistaMantenimiento extends AppCompatActivity {
             datePickerDialog.show();
         });
 
-        btnAction.setOnClickListener(v -> ejecutarAccion());
-//        btnEliminar.setOnClickListener( v -> eliminar());
+        btnGuardar.setOnClickListener(v -> ejecutarAccion());
         btnAñadir.setOnClickListener(v -> anhadirItemDetalle());
-        btnListar.setOnClickListener(v-> obtenerMantenimientos());
-
-        cargarVehiculos();
-        cargarItems();
-        obtenerMantenimientos();
-        cargarMecanicos();
+        btnListar.setOnClickListener(v-> obtenerMantenimientos());*/
     }
     @Override
     protected void onResume() {
         super.onResume();
-        obtenerMantenimientos();
-        cargarItems();
-        cargarVehiculos();
-        cargarMecanicos();
     }
+    public void mostrarMensaje(String mensaje) {
+        Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show();
+    }
+    public void limpiar(){
+        etKilometrajeActual.setText("");
+        etKilometrajeObjetivo.setText("");
+        etDetalle.setText("");
+        idItem.setText("");
+        idMecanico.setText("");
+        idVehiculo.setText("");
+        txtTotal.setText("");
+        spModVehiculo.setSelection(0);
+        spModMecanico.setSelection(0);
+        listadoDetalleMantenimiento = new ArrayList<>();
+        adapterDetalles = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listadoDetalleMantenimiento);
+        btnGuardar.setVisibility(View.GONE);
+        vistaDetalleMantenimiento.setVisibility(View.GONE);
+    }
+    public void limpiarDetalleMantenimiento(){
+        etCantidad.setText("");
+        etCantidad.setHint("Cantidad");
+        etPrecioItem.setText("");
+        idItem.setText("");
+    }
+    public void openDateTime(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        final Calendar calendario = Calendar.getInstance();
+        int año = calendario.get(Calendar.YEAR);
+        int mes = calendario.get(Calendar.MONTH);
+        int dia = calendario.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this,
+                (view, year, monthOfYear, dayOfMonth) -> {
+                    // Guardamos la fecha seleccionada
+                    calendario.set(Calendar.YEAR, year);
+                    calendario.set(Calendar.MONTH, monthOfYear);
+                    calendario.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                    // 2. Después de seleccionar la fecha, abrimos el TimePicker
+                    int hora = calendario.get(Calendar.HOUR_OF_DAY);
+                    int minuto = calendario.get(Calendar.MINUTE);
+
+                    TimePickerDialog timePickerDialog = new TimePickerDialog(
+                            this,
+                            (timeView, hourOfDay, minute) -> {
+                                // Actualizamos la hora seleccionada
+                                calendario.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                                calendario.set(Calendar.MINUTE, minute);
+
+                                // Formateamos fecha + hora y la mostramos en el EditText
+                                String fechaHoraSeleccionada = sdf.format(calendario.getTime());
+                                etFecha.setText(fechaHoraSeleccionada);
+                            },
+                            hora, minuto, true // true = formato 24 horas
+                    );
+                    timePickerDialog.show();
+                },
+                año, mes, dia);
+        datePickerDialog.show();
+    }
+    public TextView getIdVehiculo() {
+        return idVehiculo;
+    }
+    public TextView getIdMecanico() {
+        return idMecanico;
+    }
+    public TextView getIdItem() {
+        return idItem;
+    }
+    public TextView getTxtTotal() {
+        return txtTotal;
+    }
+    public EditText getEtKilometrajeActual() {
+        return etKilometrajeActual;
+    }
+    public EditText getEtKilometrajeObjetivo() {
+        return etKilometrajeObjetivo;
+    }
+    public EditText getEtFecha() {
+        return etFecha;
+    }
+    public EditText getEtDetalle() {
+        return etDetalle;
+    }
+    public EditText getEtCantidad() {
+        return etCantidad;
+    }
+    public EditText getEtPrecioItem() {
+        return etPrecioItem;
+    }
+    public Spinner getSpModVehiculo() {
+        return spModVehiculo;
+    }
+    public Spinner getSpModMecanico() {
+        return spModMecanico;
+    }
+    public Spinner getSpModItem() {
+        return spModItem;
+    }
+    public Button getBtnGuardar() {
+        return btnGuardar;
+    }
+    public Button getBtnListar() {
+        return btnListar;
+    }
+    public Button getBtnAñadir() {
+        return btnAñadir;
+    }
+    public ArrayAdapter<String> getAdapterMantenimientos() {
+        return adapterMantenimientos;
+    }
+    public ArrayAdapter<String> getAdapterMecanicos() {
+        return adapterMecanicos;
+    }
+    public ArrayAdapter<String> getAdapterVehiculos() {
+        return adapterVehiculos;
+    }
+    public ArrayAdapter<String> getAdapterItems() {
+        return adapterItems;
+    }
+    public ArrayAdapter<String> getAdapterDetalles() {
+        return adapterDetalles;
+    }
+    public ListView getListViewMantenimientos() {
+        return listViewMantenimientos;
+    }
+    public ListView getListViewDetalleMantenimiento() {
+        return listViewDetalleMantenimiento;
+    }
+    public LinearLayout getVistaDetalleMantenimiento() {
+        return vistaDetalleMantenimiento;
+    }
+    public LinearLayout getVistaMantenimientos() {
+        return vistaMantenimientos;
+    }
+    public List<String> getListadoMantenimiento() {
+        return listadoMantenimiento;
+    }
+    public List<String> getListadoDetalleMantenimiento() {
+        return listadoDetalleMantenimiento;
+    }
+    public List<String> getListadoItem() {
+        return listadoItem;
+    }
+    public List<String> getListadoVehiculo() {
+        return listadoVehiculo;
+    }
+    public List<String> getListadoMecanico() {
+        return listadoMecanico;
+    }
+    public void setVistaMantenimientos(LinearLayout vistaMantenimientos) {
+        this.vistaMantenimientos = vistaMantenimientos;
+    }
+    public void setVistaDetalleMantenimiento(LinearLayout vistaDetalleMantenimiento) {
+        this.vistaDetalleMantenimiento = vistaDetalleMantenimiento;
+    }
+    public void setListViewMantenimientos(ListView listViewMantenimientos) {
+        this.listViewMantenimientos = listViewMantenimientos;
+    }
+    public void setListViewDetalleMantenimiento(ListView listViewDetalleMantenimiento) {
+        this.listViewDetalleMantenimiento = listViewDetalleMantenimiento;
+    }
+    public void setBtnGuardar(Button btnGuardar) {
+        this.btnGuardar = btnGuardar;
+    }
+    public void setBtnListar(Button btnListar) {
+        this.btnListar = btnListar;
+    }
+    public void setBtnAñadir(Button btnAñadir) {
+        this.btnAñadir = btnAñadir;
+    }
+    public void setSpModVehiculo(Spinner spModVehiculo) {
+        this.spModVehiculo = spModVehiculo;
+    }
+    public void setSpModMecanico(Spinner spModMecanico) {
+        this.spModMecanico = spModMecanico;
+    }
+    public void setSpModItem(Spinner spModItem) {
+        this.spModItem = spModItem;
+    }
+    public void setEtKilometrajeActual(String etKilometraje) {
+        this.etKilometrajeActual.setText(etKilometraje);
+    }
+    public void setEtKilometrajeObjetivo(String etKilometraje) {
+        this.etKilometrajeObjetivo.setText(etKilometraje);
+    }
+    public void setEtFecha(String etFecha) {
+        this.etFecha.setText(etFecha);
+    }
+    public void setEtDetalle(String etDetalle) {
+        this.etDetalle.setText(etDetalle);
+    }
+    public void setEtCantidad(String etCantidad) {
+        this.etCantidad.setText(etCantidad);
+    }
+    public void setIdVehiculo(String idVehiculo) {
+        this.idVehiculo.setText(idVehiculo);
+    }
+    public void setIdMecanico(String idMecanico) {
+        this.idMecanico.setText(idMecanico);
+    }
+    public void setIdItem(String idItem) {
+        this.idItem.setText(idItem);
+    }
+    public void setTxtTotal(String txtTotal) {
+        this.txtTotal.setText(txtTotal);
+    }
+    public void setTxtTitleMantenimientos(String txtTitleMantenimientos) {
+        this.txtTitleMantenimientos.setText(txtTitleMantenimientos);
+    }
+    public void setEtPrecioItem(String precioItem) {
+        this.etPrecioItem.setText(precioItem);
+    }
+    public void setListadoItem(List<String> listadoItem) {
+        this.listadoItem = listadoItem;
+    }
+    public void setListadoVehiculo(List<String> listadoVehiculo) {
+        this.listadoVehiculo = listadoVehiculo;
+    }
+    public void setListadoMecanico(List<String> listadoMecanico) {
+        this.listadoMecanico = listadoMecanico;
+    }
+    public void setListadoMantenimiento(List<String> listadoMantenimiento) {
+        this.listadoMantenimiento = listadoMantenimiento;
+    }
+    public void setListadoDetalleMantenimiento(List<String> listadoDetalleMantenimiento) {
+        this.listadoDetalleMantenimiento = listadoDetalleMantenimiento;
+    }
+    public void setAdapterMantenimientos(ArrayAdapter<String> adapterMantenimientos) {
+        this.adapterMantenimientos = adapterMantenimientos;
+    }
+    public void setAdapterMecanicos(ArrayAdapter<String> adapterMecanicos) {
+        this.adapterMecanicos = adapterMecanicos;
+    }
+    public void setAdapterVehiculos(ArrayAdapter<String> adapterVehiculos) {
+        this.adapterVehiculos = adapterVehiculos;
+    }
+    public void setAdapterItems(ArrayAdapter<String> adapterItems) {
+        this.adapterItems = adapterItems;
+    }
+    public void setAdapterDetalles(ArrayAdapter<String> adapterDetalles) {
+        this.adapterDetalles = adapterDetalles;
+    }
+
+    /*
     private void cargarVehiculos(){
         listadoVehiculo = negocioVehiculo.cargarDatos();
 
@@ -328,5 +555,5 @@ public class VistaMantenimiento extends AppCompatActivity {
         btnAction.setVisibility(View.GONE);
         vistaDetalleMantenimiento.setVisibility(View.GONE);
         modeloMantenimiento = new ModeloMantenimiento();
-    }
+    }*/
 }
