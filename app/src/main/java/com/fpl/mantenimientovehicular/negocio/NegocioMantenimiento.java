@@ -15,15 +15,21 @@ public class NegocioMantenimiento {
     public NegocioMantenimiento(Context context){
         mantenimiento = new ModeloMantenimiento(context);
         detalleMantenimiento = new ModeloDetalleMantenimiento(context);
-        detalles = new ArrayList<>();
     }
     public List<String> cargarDatosMantenimientoToListStr(){
         List<ModeloMantenimiento> mantenimientos = mantenimiento.obtenerTodos();
         List<String> lista = new ArrayList<>();
         for (ModeloMantenimiento m : mantenimientos) {
-            String item = "ID: " + m.getId() + ", Fecha: " + m.getFecha() + ", Kilometraje: " + m.getKilometrajeMantenimineto() +
-                    ", Detalle: " + m.getDetalle() + ", Costo Total: " + m.getCosto_total();
-            lista.add(item);
+            String itemMantenimiento = "ID: " + m.getId() + ", Fecha: " + m.getFecha() + ", Kilometraje: " + m.getKilometrajeMantenimineto() +
+                    ", Detalle: " + m.getDetalle() + ", Costo Total: " + m.getCosto_total() ;
+            List<ModeloDetalleMantenimiento> listDetalle = detalleMantenimiento.obtenerPorId(m.getId());
+            itemMantenimiento = itemMantenimiento + " | Detalles: [ "+listDetalle.size()+" ]" + " | Lista Detalle: [ ";
+            String detStr = "";
+            for (ModeloDetalleMantenimiento d : listDetalle){
+                detStr += "{ ID : "+d.getId()+" | ITEM: "+d.getItem_id()+" | Mant: "+d.getMantenimiento_id()+" , Cantidad: "+d.getCantidad()+" , Precio: "+d.getPrecio_unitario()+" , SubTotal: "+d.getSubtotal()+" } ";
+            }
+            itemMantenimiento = itemMantenimiento + detStr +" ]";
+            lista.add(itemMantenimiento);
         }
         return lista;
     }
@@ -38,9 +44,9 @@ public class NegocioMantenimiento {
         }
         return lista;
     }
-    public void setDetalleMantenimientoSetToList(int id, int mantenimiento_id, int item_id, double precio_unitario, double cantidad){
+    public void setDetalleMantenimientoSetToList(int item_id, double precio_unitario, double cantidad){
         double subtotal = precio_unitario * cantidad;
-        ModeloDetalleMantenimiento det = new ModeloDetalleMantenimiento(id, mantenimiento_id, item_id, precio_unitario, cantidad, subtotal);
+        ModeloDetalleMantenimiento det = new ModeloDetalleMantenimiento(0, 0, item_id, precio_unitario, cantidad, subtotal);
         if(detalles == null){
             detalles = new ArrayList<>();
         }
@@ -55,14 +61,7 @@ public class NegocioMantenimiento {
     }
     public long registroMantenimientoCompleto(int idVehiculo, int idMecanico, String fecha, int kilometraje, String detalle){
         Double total = calculoTotalDetalle();
-        ModeloMantenimiento mant = new ModeloMantenimiento(
-                0,
-                idVehiculo,
-                idMecanico,
-                fecha,
-                kilometraje,
-                detalle,
-                total);
+        ModeloMantenimiento mant = new ModeloMantenimiento(0, idVehiculo, idMecanico, fecha, kilometraje, detalle, total);
         long id = mant.agregar();
         if (id == -1) return -1;
         for (ModeloDetalleMantenimiento details : detalles) {

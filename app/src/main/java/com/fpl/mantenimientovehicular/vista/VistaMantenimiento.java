@@ -1,8 +1,11 @@
 package com.fpl.mantenimientovehicular.vista;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -15,10 +18,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 
 import com.fpl.mantenimientovehicular.R;
 import com.fpl.mantenimientovehicular.controller.MantenimientoDetController;
 import com.fpl.mantenimientovehicular.negocio.NegocioMantenimiento;
+import com.fpl.mantenimientovehicular.service.AlarmaKilometraje;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,6 +35,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class VistaMantenimiento extends AppCompatActivity {
+    private AlarmaKilometraje alarmaKilometraje;
     private MantenimientoDetController mantenimientoDetController;
     private NegocioMantenimiento negocio;
     private List<String> listadoItem, listadoVehiculo, listadoMecanico, listadoMantenimiento, listadoDetalleMantenimiento;
@@ -42,6 +50,19 @@ public class VistaMantenimiento extends AppCompatActivity {
     public void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mantenimiento_main);
+
+        // Solicitar permiso para notificaciones (Android 13 o superior)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1);
+            }
+        }
+
+        // Configurar una notificación recurrente cada 24 horas
+        int intervalo24Horas = 24 * 60 * 60 * 1000; // 24 horas en milisegundos
+        int intervalo1min = 1 * 60 * 1000; // 1 minuto en milisegundos
+        AlarmaKilometraje.programarAlarmaRecurrente(this, intervalo1min);
+
 
         negocio = new NegocioMantenimiento(this);
         mantenimientoDetController = new MantenimientoDetController(this, negocio);
@@ -73,7 +94,6 @@ public class VistaMantenimiento extends AppCompatActivity {
         btnAñadir = findViewById(R.id.btnAnhadirItem);
         listViewMantenimientos = findViewById(R.id.listViewMantenimientos);
         listViewDetalleMantenimiento = findViewById(R.id.listViewDetalleMantenimientos);
-
         mantenimientoDetController.initEvents();
 //        etFecha.setOnClickListener(v -> openDateTime());
 

@@ -2,11 +2,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:nestedScrollingEnabled="false">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -17,7 +19,9 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Gestion de Mantenimiento"
+                android:text="GESTION DE MANTENIMIENTO"
+                android:textSize="18dp"
+                android:textStyle="bold"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
@@ -285,7 +289,9 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Detalle del Mantenimiento"
+                        android:text="DETALLES"
+                        android:textSize="18dp"
+                        android:textStyle="bold"
                         android:textAlignment="center" />
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -322,12 +328,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="MANTENIMIENTOS REGISTRADOS"
+                    android:textSize="18dp"
+                    android:textStyle="bold"
                     android:textAlignment="center" />
-
                 <ListView
                     android:id="@+id/listViewMantenimientos"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="400dp"
+                    android:nestedScrollingEnabled="true"
                     android:layout_marginTop="16dp" />
             </LinearLayout>
 

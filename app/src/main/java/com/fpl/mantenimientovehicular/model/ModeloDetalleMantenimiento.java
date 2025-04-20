@@ -94,23 +94,29 @@ public class ModeloDetalleMantenimiento {
     }
     // READ (Un vehículo por ID)
     @SuppressLint("Range")
-    public ModeloDetalleMantenimiento obtenerPorId(int id) {
+    public List<ModeloDetalleMantenimiento> obtenerPorId(int mantenimientoId) {
         try {
-            Cursor cursor = db.query(table, null, "id = ?",
-                    new String[]{String.valueOf(id)}, null, null, null);
-
-            if (cursor != null && cursor.moveToFirst()) {
-                ModeloDetalleMantenimiento model = new ModeloDetalleMantenimiento();
-                model.setId(cursor.getInt(cursor.getColumnIndex("id")));
-                model.setMantenimiento_id(cursor.getColumnIndex("mantenimiento_id"));
-                model.setItem_id(cursor.getColumnIndex("item_id"));
-                model.setCantidad(Double.parseDouble(cursor.getString(cursor.getColumnIndex("cantidad"))));
-                model.setPrecio_unitario(Double.parseDouble(cursor.getString(cursor.getColumnIndex("precio_unitario"))));
-                model.setSubtotal(Double.parseDouble(cursor.getString(cursor.getColumnIndex("subtotal"))));
-                cursor.close();
-                return model;
+            if (db == null) {
+                throw new Exception("Error al abrir la base de datos");
             }
-            return null;
+            List<ModeloDetalleMantenimiento> listado = new ArrayList<>();
+            Cursor cursor = db.query(table, null, "mantenimiento_id = ?",
+                    new String[]{String.valueOf(mantenimientoId)}, null, null, null);
+            if (cursor.moveToFirst()) {
+                do {
+                    ModeloDetalleMantenimiento model = new ModeloDetalleMantenimiento();
+                    model.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                    model.setMantenimiento_id(cursor.getInt(cursor.getColumnIndex("mantenimiento_id")));
+                    model.setItem_id(cursor.getInt(cursor.getColumnIndex("item_id")));
+                    model.setCantidad(Double.parseDouble(cursor.getString(cursor.getColumnIndex("cantidad"))));
+                    model.setPrecio_unitario(Double.parseDouble(cursor.getString(cursor.getColumnIndex("precio_unitario"))));
+                    model.setSubtotal(Double.parseDouble(cursor.getString(cursor.getColumnIndex("subtotal"))));
+                    listado.add(model);
+                } while (cursor.moveToNext());
+            }
+
+            cursor.close();
+            return listado;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

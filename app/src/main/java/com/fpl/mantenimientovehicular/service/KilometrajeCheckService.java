@@ -6,7 +6,6 @@ import android.os.IBinder;
 
 import androidx.annotation.Nullable;
 
-import com.fpl.mantenimientovehicular.controller.NotificacionController;
 import com.fpl.mantenimientovehicular.model.ModeloVehiculo;
 import com.fpl.mantenimientovehicular.negocio.NegocioVehiculo;
 

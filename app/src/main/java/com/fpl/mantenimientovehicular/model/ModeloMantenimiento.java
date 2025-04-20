@@ -77,7 +77,7 @@ public class ModeloMantenimiento {
                 throw new Exception("Error al abrir la base de datos");
             }
             List<ModeloMantenimiento> listado = new ArrayList<>();
-            Cursor cursor = db.query(table, null, null, null, null, null, null);
+            Cursor cursor = db.query(table, null, null, null, null, null, "id DESC");
 
             if (cursor.moveToFirst()) {
                 do {

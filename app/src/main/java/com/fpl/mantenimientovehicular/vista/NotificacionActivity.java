@@ -7,11 +7,11 @@ import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.fpl.mantenimientovehicular.R;
-import com.fpl.mantenimientovehicular.controller.NotificacionController;
+import com.fpl.mantenimientovehicular.controller.NotificationController;
 import com.fpl.mantenimientovehicular.negocio.NegocioNotificacion;
 
 public class NotificacionActivity extends AppCompatActivity {
-    private NotificacionController controller;
+    private NotificationController controller;
     private NegocioNotificacion negocio;
     private EditText etIdVehiculo, etIntervaloKm;
 
@@ -20,7 +20,7 @@ public class NotificacionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_config_notificaciones);
         negocio = new NegocioNotificacion(this);
-        controller = new NotificacionController(negocio, this);
+        controller = new NotificationController(this);
 
         etIdVehiculo = findViewById(R.id.etIdVehiculo);
         etIntervaloKm = findViewById(R.id.etIntervaloKm);

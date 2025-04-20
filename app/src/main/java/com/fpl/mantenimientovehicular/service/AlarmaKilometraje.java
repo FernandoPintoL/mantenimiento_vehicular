@@ -10,38 +10,24 @@ import android.os.Build;
 import com.fpl.mantenimientovehicular.model.ModeloVehiculo;
 
 public class AlarmaKilometraje {
-    @SuppressLint("ScheduleExactAlarm")
-    public static void programarAlarma(Context context, ModeloVehiculo vehiculo, int kilometrajeObjetivo) {
+    public static void programarAlarmaRecurrente(Context context, int intervaloMillis) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, KilometrajeNotificationReceiver.class);
-        intent.putExtra("VEHICULO_ID", vehiculo.getId());
-        intent.putExtra("KILOMETRAJE_ACTUAL", vehiculo.getKilometrajeActual());
-        intent.putExtra("KILOMETRAJE_OBJETIVO", kilometrajeObjetivo);
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 context,
-                vehiculo.getId(),
+                0, // ID único para esta alarma
                 intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
 
-        // Configura la alarma para cuando se alcance el kilometraje objetivo
-        // Nota: En realidad necesitarías verificar periódicamente el odómetro
-        long triggerAtMillis = calcularMomentoNotificacion(vehiculo, kilometrajeObjetivo);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            alarmManager.setExactAndAllowWhileIdle(
-                    AlarmManager.RTC_WAKEUP,
-                    triggerAtMillis,
-                    pendingIntent
-            );
-        } else {
-            alarmManager.setExact(
-                    AlarmManager.RTC_WAKEUP,
-                    triggerAtMillis,
-                    pendingIntent
-            );
-        }
+        // Configura la alarma recurrente
+        alarmManager.setRepeating(
+                AlarmManager.RTC_WAKEUP,
+                System.currentTimeMillis() + intervaloMillis, // Primera ejecución
+                intervaloMillis, // Intervalo de repetición
+                pendingIntent
+        );
     }
 
     private static long calcularMomentoNotificacion(ModeloVehiculo vehiculo, int kilometrajeObjetivo) {

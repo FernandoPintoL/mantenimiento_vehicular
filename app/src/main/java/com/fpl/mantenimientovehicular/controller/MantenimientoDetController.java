@@ -20,13 +20,16 @@ public class MantenimientoDetController {
     private NegocioVehiculo negocioVehiculo;
     private NegocioItem negocioItem;
     private NegocioMecanico negocioMecanico;
-    SimpleDateFormat sdf;
+    private SimpleDateFormat sdf;
+    private NotificationController notificationController;
     public MantenimientoDetController(VistaMantenimiento vista, NegocioMantenimiento negocio) {
         this.vista = vista;
         this.negocioMantenimiento = negocio;
         this.negocioMecanico = new NegocioMecanico(vista.getApplicationContext());
         this.negocioVehiculo = new NegocioVehiculo(vista.getApplicationContext());
         this.negocioItem = new NegocioItem(vista.getApplicationContext());
+        this.notificationController = new NotificationController(vista.getApplicationContext());
+
     }
     public void initEvents() {
         cargarFecha();
@@ -127,8 +130,10 @@ public class MantenimientoDetController {
                     detalle
             );
             if (result > 0) {
-                vista.mostrarMensaje("Datos guardados correctamente");
-                vista.mostrarMensaje("Kilometraje actualizado correctamente");
+                /*vista.mostrarMensaje("Datos guardados correctamente");
+                vista.mostrarMensaje("Kilometraje actualizado correctamente");*/
+                notificarMantenimientoGuardado();
+
                 cargarVehiculos();
                 vista.limpiar();
                 cargarMantenimientos();
@@ -140,18 +145,15 @@ public class MantenimientoDetController {
         });
         vista.getBtnAñadir().setOnClickListener(v -> {
             getFormToDetalleMantenimiento();
-            vista.getTxtTotal().setText(String.valueOf(negocioMantenimiento.calculoTotalDetalle()));
-            vista.limpiarDetalleMantenimiento();
-            actListDetMantenimiento();
             vista.getBtnGuardar().setVisibility(View.VISIBLE);
             vista.getVistaDetalleMantenimiento().setVisibility(View.VISIBLE);
+            vista.limpiarDetalleMantenimiento();
         });
         vista.getBtnListar().setOnClickListener(v -> {
             cargarMantenimientos();
             vista.getVistaMantenimientos().setVisibility(View.VISIBLE);
         });
     }
-
     public void cargarMantenimientos() {
         List<String> list = negocioMantenimiento.cargarDatosMantenimientoToListStr();
         vista.setListadoMantenimiento(list);
@@ -190,7 +192,6 @@ public class MantenimientoDetController {
             vista.mostrarMensaje("No hay items registrados");
         }
     }
-
     public void cargarMecanicos() {
         List<String> list = negocioMecanico.cargarDatos();
         vista.setListadoMecanico(list);
@@ -217,13 +218,9 @@ public class MantenimientoDetController {
             vista.mostrarMensaje("Por favor complete todos los campos");
             return;
         }
-        negocioMantenimiento.setDetalleMantenimientoSetToList(
-                0,
-                0,
-                Integer.parseInt(idItem),
-                Double.parseDouble(precioItem),
-                Double.parseDouble(cantidad)
-        );
+        negocioMantenimiento.setDetalleMantenimientoSetToList(Integer.parseInt(idItem), Double.parseDouble(precioItem), Double.parseDouble(cantidad));
+        actListDetMantenimiento();
+        vista.setTxtTotal(String.valueOf(negocioMantenimiento.calculoTotalDetalle()));
     }
     public void actListDetMantenimiento() {
         List<String> list = negocioMantenimiento.cargarDatosDetMantToListStr();
@@ -233,5 +230,11 @@ public class MantenimientoDetController {
         vista.setListadoDetalleMantenimiento(list);
         vista.setAdapterDetalles(new ArrayAdapter<>(vista.getApplicationContext(), android.R.layout.simple_list_item_1, list));
         vista.getListViewDetalleMantenimiento().setAdapter(vista.getAdapterDetalles());
+    }
+    public void notificarMantenimientoGuardado() {
+        notificationController.enviarNotificacion(
+                "Mantenimiento Guardado",
+                "El mantenimiento se ha registrado correctamente."
+        );
     }
 }
