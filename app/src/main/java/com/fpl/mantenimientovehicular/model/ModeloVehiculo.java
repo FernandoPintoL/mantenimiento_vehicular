@@ -89,20 +89,6 @@ public class ModeloVehiculo {
             throw new RuntimeException(e);
         }
     }
-    // Actualizar kilometrajes
-    public int actualizarKilometrajes(int id, int kilometraje_actual, int kilometraje_esperado) {
-        try {
-            if (db == null) {
-                throw new Exception("Error al abrir la base de datos");
-            }
-            ContentValues values = new ContentValues();
-            values.put("kilometraje_actual", kilometraje_actual);
-            values.put("kilometraje_esperado", kilometraje_esperado);
-            return db.update(table, values, "id = ?", new String[]{String.valueOf(id)});
-        }catch (Exception e){
-            throw new RuntimeException(e);
-        }
-    }
     // READ (Todos los vehículos)
     @SuppressLint("Range")
     public List<ModeloVehiculo> obtenerTodos() {
@@ -171,26 +157,6 @@ public class ModeloVehiculo {
             return db.delete(table, "id = ?",
                     new String[]{String.valueOf(id)});
         }catch (Exception e){
-            throw new RuntimeException(e);
-        }
-    }
-    @SuppressLint("Range")
-    public boolean necesitaMantenimiento(int id) {
-        try {
-            if (db == null) {
-                throw new Exception("Error al abrir la base de datos");
-            }
-            Cursor cursor = db.query(table, null, "id = ?",
-                    new String[]{String.valueOf(id)}, null, null, null);
-
-            if (cursor != null && cursor.moveToFirst()) {
-                int kilometraje_inicial = cursor.getInt(cursor.getColumnIndex("kilometraje_actual"));
-                int kilometraje_esperado = cursor.getInt(cursor.getColumnIndex("kilometraje_esperado"));
-                cursor.close();
-                return kilometraje_inicial >= kilometraje_esperado;
-            }
-            return false;
-        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

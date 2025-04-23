@@ -21,7 +21,7 @@ public class VehiculoController {
             long result = negocio.agregar();
             if (result > 0) {
                 vista.limpiarFormulario();
-                vista.cargarDatosToList();
+                vista.cargarDatosToListView();
                 vista.mostrarMensaje("Datos guardados correctamente");
             } else {
                 Log.d("TAG", "Error al guardar datos");
@@ -32,7 +32,7 @@ public class VehiculoController {
             int result = negocio.editar();
             if (result > 0) {
                 vista.limpiarFormulario();
-                vista.cargarDatosToList();
+                vista.cargarDatosToListView();
                 vista.mostrarMensaje("Datos editados correctamente");
                 vista.getBtnGuardar().setVisibility(View.VISIBLE);
                 vista.getBtnsAction().setVisibility(View.GONE);
@@ -44,13 +44,19 @@ public class VehiculoController {
             int result = negocio.eliminar();
             if (result > 0) {
                 vista.limpiarFormulario();
-                vista.cargarDatosToList();
+                vista.cargarDatosToListView();
                 vista.mostrarMensaje("Datos eliminados correctamente");
                 vista.getBtnGuardar().setVisibility(View.VISIBLE);
                 vista.getBtnsAction().setVisibility(View.GONE);
             } else {
                 Log.d("TAG", "Error al eliminar datos");
             }
+        });
+        vista.getBtnListar().setOnClickListener(v -> {
+            vista.cargarDatosToListView();
+            vista.getBtnsAction().setVisibility(View.GONE);
+            vista.getBtnGuardar().setVisibility(View.VISIBLE);
+            vista.limpiarFormulario();
         });
         vista.getListView().setOnItemClickListener((parent, view, position, id) -> {
             Log.d("TAG", "Item clicked: " + position);
@@ -80,7 +86,6 @@ public class VehiculoController {
                 }
             }
         });
-        vista.cargarDatosToList();
         vista.limpiarFormulario();
     }
     public void cargarModeloFromFormulario() {

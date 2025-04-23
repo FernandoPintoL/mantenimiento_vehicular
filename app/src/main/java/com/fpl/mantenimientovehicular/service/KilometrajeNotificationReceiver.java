@@ -10,40 +10,40 @@ import android.os.Build;
 import androidx.core.app.NotificationCompat;
 
 import com.fpl.mantenimientovehicular.R;
+import com.fpl.mantenimientovehicular.controller.NotificationHelper;
 
 public class KilometrajeNotificationReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        // Aquí puedes manejar la notificación cuando se recibe la alarma
-        // Por ejemplo, mostrar una notificación al usuario
-        int vehiculoId = intent.getIntExtra("VEHICULO_ID", 0);
-        int kilometrajeActual = intent.getIntExtra("KILOMETRAJE_ACTUAL", 0);
-        int kilometrajeObjetivo = intent.getIntExtra("KILOMETRAJE_OBJETIVO", 0);
-
-        mostrarNotificacion(context);
+        String titulo = intent.getStringExtra("TITULO");
+        String mensaje = intent.getStringExtra("MENSAJE");
+        mostrarNotificacion(context,titulo, mensaje);
     }
 
-    private void mostrarNotificacion(Context context) {
+    private void mostrarNotificacion(Context context, String titulo, String mensaje) {
+        // aqui falta pasar el mensaje y titulo a la notificacion
         NotificationManager notificationManager = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
-                    "channel_kilometraje",
-                    "Recordatorios de Kilometraje",
+                    NotificationHelper.CHANNEL_ID,
+                    NotificationHelper.CHANNEL_NAME,
                     NotificationManager.IMPORTANCE_DEFAULT
             );
             notificationManager.createNotificationChannel(channel);
         }
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "channel_kilometraje")
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NotificationHelper.CHANNEL_ID)
                 .setSmallIcon(R.drawable.baseline_circle_notifications_24)
-                .setContentTitle("Revisar Kilometraje")
-                .setContentText("No olvides revisar el kilometraje de tu vehículo.")
+                .setContentTitle(titulo)
+                .setContentText(mensaje)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true);
 
-        notificationManager.notify(0, builder.build());
+        // Generar un ID único para la notificación
+        int notificationId = (int) System.currentTimeMillis(); // Usar el tiempo actual como ID único
+        notificationManager.notify(notificationId, builder.build());
     }
 
 }

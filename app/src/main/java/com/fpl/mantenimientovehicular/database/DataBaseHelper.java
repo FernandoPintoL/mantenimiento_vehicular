@@ -58,7 +58,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "vehiculo_id INTEGER, " +
                     "kilometraje_objetivo INTEGER, " +
+                    "titulo TEXT, " +
                     "mensaje TEXT, " +
+                    "intervalo_notificacion INTEGER, " +
                     "activo BOOLEAN, " +
                     "FOREIGN KEY(vehiculo_id) REFERENCES Vehiculo (id));";
 

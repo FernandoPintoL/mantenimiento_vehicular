@@ -22,7 +22,7 @@ public class MecanicoController {
             long result = negocio.agregar();
             if (result > 0) {
                 vista.limpiarFormulario();
-                vista.cargarDatosToList();
+                vista.cargarDatosToListView();
                 vista.mostrarMensaje("Datos guardados correctamente");
             } else {
                 vista.mostrarMensaje("Error al guardar datos");
@@ -34,7 +34,7 @@ public class MecanicoController {
             int result = negocio.editar();
             if (result > 0) {
                 vista.limpiarFormulario();
-                vista.cargarDatosToList();
+                vista.cargarDatosToListView();
                 vista.mostrarMensaje("Datos editados correctamente");
                 vista.getBtnGuardar().setVisibility(View.VISIBLE);
                 vista.getBtnsAction().setVisibility(View.GONE);
@@ -47,7 +47,7 @@ public class MecanicoController {
             int result = negocio.eliminar();
             if (result > 0) {
                 vista.limpiarFormulario();
-                vista.cargarDatosToList();
+                vista.cargarDatosToListView();
                 vista.mostrarMensaje("Datos eliminados correctamente");
                 vista.getBtnGuardar().setVisibility(View.VISIBLE);
                 vista.getBtnsAction().setVisibility(View.GONE);
@@ -56,6 +56,13 @@ public class MecanicoController {
                 Log.d("TAG", "Error al eliminar datos");
             }
         });
+        vista.getBtnListar().setOnClickListener(v -> {
+            vista.cargarDatosToListView();
+            vista.limpiarFormulario();
+            vista.getListView().setVisibility(View.VISIBLE);
+            vista.getBtnGuardar().setVisibility(View.VISIBLE);
+            vista.getBtnsAction().setVisibility(View.GONE);
+        });
         vista.getListView().setOnItemClickListener((parent, view, position, id) -> {
             Log.d("TAG", "Item clicked: " + position);
             vista.getBtnsAction().setVisibility(View.VISIBLE);
@@ -63,8 +70,6 @@ public class MecanicoController {
             negocio.setPosicion(position);
             cargarFormToList();
         });
-        vista.cargarDatosToList();
-        vista.limpiarFormulario();
     }
     public void cargarModeloFromFormulario() {
         String nombre = vista.getNombre();

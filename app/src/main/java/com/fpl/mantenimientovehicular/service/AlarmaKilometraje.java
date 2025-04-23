@@ -10,10 +10,11 @@ import android.os.Build;
 import com.fpl.mantenimientovehicular.model.ModeloVehiculo;
 
 public class AlarmaKilometraje {
-    public static void programarAlarmaRecurrente(Context context, int intervaloMillis) {
+    public static void programarAlarmaRecurrente(Context context,String titulo, String mensaje, int intervaloMillis) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, KilometrajeNotificationReceiver.class);
-
+        intent.putExtra("TITULO", titulo);
+        intent.putExtra("MENSAJE", mensaje);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 context,
                 0, // ID único para esta alarma

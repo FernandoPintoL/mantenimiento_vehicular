@@ -83,8 +83,8 @@ public class ModeloMantenimiento {
                 do {
                     ModeloMantenimiento model = new ModeloMantenimiento();
                     model.setId(cursor.getInt(cursor.getColumnIndex("id")));
-                    model.setMecanico_id(cursor.getColumnIndex("mecanico_id"));
-                    model.setVehiculo_id(cursor.getColumnIndex("vehiculo_id"));
+                    model.setMecanico_id(cursor.getInt(cursor.getColumnIndex("mecanico_id")));
+                    model.setVehiculo_id(cursor.getInt(cursor.getColumnIndex("vehiculo_id")));
                     model.setKilometrajeMantenimiento(cursor.getInt(cursor.getColumnIndex("kilometraje_mantenimiento")));
                     model.setCosto_total(Double.parseDouble(cursor.getString(cursor.getColumnIndex("costo_total"))));
                     model.setDetalle(cursor.getString(cursor.getColumnIndex("detalle")));
@@ -147,18 +147,6 @@ public class ModeloMantenimiento {
     public int getVehiculo_id() {return vehiculo_id;}
     public void setVehiculo_id(int vehiculo_id) {this.vehiculo_id = vehiculo_id;}
     public int getMecanico_id() {return mecanico_id;}
-    public void setMecanico_id(int item_id) {this.mecanico_id = item_id;}
-    @Override
-    public String toString() {
-        return "ModeloMantenimiento{" +
-                "id=" + id +
-                ", fecha='" + fecha + '\'' +
-                ", kilometraje_mantenimiento=" + kilometraje_mantenimiento +
-                ", detalle='" + detalle + '\'' +
-                ", costo_total=" + costo_total +
-                ", vehiculo_id=" + vehiculo_id +
-                ", mecanico_id=" + mecanico_id +
-                '}';
-    }
+    public void setMecanico_id(int mecanico_id) {this.mecanico_id = mecanico_id;}
 }
 

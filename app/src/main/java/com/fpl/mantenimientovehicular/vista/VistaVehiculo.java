@@ -17,13 +17,13 @@ import com.fpl.mantenimientovehicular.controller.VehiculoController;
 import com.fpl.mantenimientovehicular.negocio.NegocioVehiculo;
 
 import java.util.List;
+import java.util.Map;
 
 public class VistaVehiculo extends AppCompatActivity {
     private VehiculoController controlador;
     private NegocioVehiculo negocio;
-    private List<String> listado;
     private ListView listView;
-    private Button btnGuardar, btnEliminar, btnEditar;
+    private Button btnGuardar, btnEliminar, btnEditar, btnListar;
     private EditText etMarca, etAnho, etPlaca, etTipo, etKilometrajeActual, etKilometrajeEsperado;
     private TextView idVehiculo;
     private LinearLayout btnsAction;
@@ -45,28 +45,46 @@ public class VistaVehiculo extends AppCompatActivity {
         btnGuardar = findViewById(R.id.btnGuardarVehiculo);
         btnEditar = findViewById(R.id.btnEditarVehiculo);
         btnEliminar = findViewById(R.id.btnEliminarVehiculo);
+        btnListar = findViewById(R.id.btnListarVehiculo);
         listView = findViewById(R.id.listViewVehiculos);
         btnsAction = findViewById(R.id.btnsActionsVehiculos);
 
         controlador.initEvents();
-        cargarDatosToList();
+        cargarDatosToListView();
     }
     @Override
     protected void onResume() {
         super.onResume();
-        cargarDatosToList();
+        cargarDatosToListView();
         limpiarFormulario();
     }
-    public void cargarDatosToList(){
-        listado = negocio.cargarDatos();
-        if (listado.isEmpty()){
-            mostrarMensaje("No hay datos disponibles");
-        }
-        // Usar un ArrayAdapter simple para mostrar la información
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_list_item_1,
-                listado);
+    public void cargarDatosToListView(){
+        List<Map<String,String>> datos = negocio.cargarDatosMap();
+        ArrayAdapter<Map<String,String>> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, datos){
+            @Override
+            public View getView(int position, View convertView, android.view.ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                Map<String, String> item = getItem(position);
+                if (item != null) {
+                    String text = "ID: " + item.get("id") + "\n" +
+                            "Marca: " + item.get("marca") + "\n" +
+                            "Año: " + item.get("anho") + "\n" +
+                            "Placa: " + item.get("placa") + "\n" +
+                            "Tipo: " + item.get("tipo") + "\n" +
+                            "Kilometraje Actual: " + item.get("kilometrajeActual") + "\n" +
+                            "Kilometraje Esperado: " + item.get("kilometrajeEsperado");
+                    ((TextView) view).setText(text);
+                    /*if (Integer.parseInt(item.get("kilometrajeActual")) > Integer.parseInt(item.get("kilometrajeEsperado"))) {
+                        view.setBackgroundColor(getResources().getColor(R.color.red));
+                    } else {
+                        view.setBackgroundColor(getResources().getColor(R.color.green));
+                    }*/
+                    // como cambiarle el padding
+                    ((TextView) view).setPadding(16, 16, 16, 16);
+                }
+                return view;
+            }
+        };
         listView.setAdapter(adapter);
     }
     public void limpiarFormulario() {
@@ -81,9 +99,6 @@ public class VistaVehiculo extends AppCompatActivity {
     }
     public void mostrarMensaje(String mensaje) {
         Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show();
-    }
-    public List<String> listados(){
-        return listado;
     }
     public ListView getListView() {
         return listView;
@@ -135,7 +150,7 @@ public class VistaVehiculo extends AppCompatActivity {
     public void setEtKilometrajeEsperado(String kilometraje) {
         etKilometrajeEsperado.setText(kilometraje);
     }
-    public String getIdVehiculo() {
-        return idVehiculo.getText().toString();
+    public Button getBtnListar() {
+        return btnListar;
     }
 }

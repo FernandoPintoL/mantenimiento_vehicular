@@ -1,18 +1,25 @@
 package com.fpl.mantenimientovehicular.controller;
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
+import com.fpl.mantenimientovehicular.model.ModeloDetalleMantenimiento;
 import com.fpl.mantenimientovehicular.negocio.NegocioItem;
 import com.fpl.mantenimientovehicular.negocio.NegocioMantenimiento;
 import com.fpl.mantenimientovehicular.negocio.NegocioMecanico;
 import com.fpl.mantenimientovehicular.negocio.NegocioVehiculo;
 import com.fpl.mantenimientovehicular.vista.VistaMantenimiento;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class MantenimientoDetController {
     private VistaMantenimiento vista;
@@ -21,19 +28,15 @@ public class MantenimientoDetController {
     private NegocioItem negocioItem;
     private NegocioMecanico negocioMecanico;
     private SimpleDateFormat sdf;
-    private NotificationController notificationController;
     public MantenimientoDetController(VistaMantenimiento vista, NegocioMantenimiento negocio) {
         this.vista = vista;
         this.negocioMantenimiento = negocio;
         this.negocioMecanico = new NegocioMecanico(vista.getApplicationContext());
         this.negocioVehiculo = new NegocioVehiculo(vista.getApplicationContext());
         this.negocioItem = new NegocioItem(vista.getApplicationContext());
-        this.notificationController = new NotificationController(vista.getApplicationContext());
-
     }
     public void initEvents() {
         cargarFecha();
-        cargarMantenimientos();
         cargarItems();
         cargarMecanicos();
         cargarVehiculos();
@@ -41,7 +44,7 @@ public class MantenimientoDetController {
         vista.getSpModItem().setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position >= 0 && position < vista.getListadoItem().size()) {
+                if (position >= 0 && position < vista.getSpModItem().getCount()) {
                     negocioItem.setPosicion(position);
                     int idItem = negocioItem.obtenerModeloPorPosicion().getId();
                     String nombre = negocioItem.obtenerModeloPorPosicion().getNombre();
@@ -63,7 +66,7 @@ public class MantenimientoDetController {
         vista.getSpModVehiculo().setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position >= 0 && position < vista.getListadoVehiculo().size()) {
+                if (position >= 0 && position < vista.getSpModVehiculo().getCount()) {
                     negocioVehiculo.setPosicion(position);
                     int idVehiculo = negocioVehiculo.obtenerModeloPorPosicion().getId();
                     int kilometraje = negocioVehiculo.obtenerModeloPorPosicion().getKilometrajeActual();
@@ -83,12 +86,15 @@ public class MantenimientoDetController {
         vista.getSpModMecanico().setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position >= 0 && position < vista.getListadoMecanico().size()) {
+                if (position >= 0 && position < vista.getSpModMecanico().getCount()) {
                     negocioMecanico.setPosicion(position);
-                    int idMecanico = negocioMecanico.obtenerModeloPorPosicion().getId();
+                    Map<String,String> selectedItem = negocioMecanico.getModeloMap();
+                    int idMecanico = Integer.parseInt(selectedItem.get("id"));
+                    String nombre = selectedItem.get("nombre");
                     vista.setIdMecanico(String.valueOf(idMecanico));
-                } else {
-                    vista.getEtKilometrajeActual().setText("");
+                    vista.mostrarMensaje("Mecánico seleccionado: " + position);
+                    vista.mostrarMensaje("ID Mecanico: " + idMecanico);
+                    vista.mostrarMensaje("Mecanico Selecionado:"+nombre);
                 }
             }
 
@@ -99,9 +105,8 @@ public class MantenimientoDetController {
         });
         vista.getListViewDetalleMantenimiento().setOnItemClickListener((parent, view, position, id) -> {
             negocioMantenimiento.eliminarDetailsPos(position);
-            vista.getListadoDetalleMantenimiento().remove(position);
-            vista.getAdapterDetalles().notifyDataSetChanged();
             vista.getTxtTotal().setText(String.valueOf(negocioMantenimiento.calculoTotalDetalle()));
+            actListDetMantenimiento();
             vista.mostrarMensaje("Detalle eliminado correctamente");
         });
         vista.getBtnGuardar().setOnClickListener(v -> {
@@ -132,13 +137,14 @@ public class MantenimientoDetController {
             if (result > 0) {
                 /*vista.mostrarMensaje("Datos guardados correctamente");
                 vista.mostrarMensaje("Kilometraje actualizado correctamente");*/
-                notificarMantenimientoGuardado();
+                //notificarMantenimientoGuardado();
 
                 cargarVehiculos();
                 vista.limpiar();
-                cargarMantenimientos();
+                vista.cargarMantenimientos();
                 vista.getVistaMantenimientos().setVisibility(View.VISIBLE);
                 negocioMantenimiento.limpiarDetalles();
+                actListDetMantenimiento();
             } else {
                 vista.mostrarMensaje("Error al guardar datos");
             }
@@ -150,61 +156,64 @@ public class MantenimientoDetController {
             vista.limpiarDetalleMantenimiento();
         });
         vista.getBtnListar().setOnClickListener(v -> {
-            cargarMantenimientos();
+            vista.cargarMantenimientos();
+            vista.limpiar();
             vista.getVistaMantenimientos().setVisibility(View.VISIBLE);
         });
     }
-    public void cargarMantenimientos() {
-        List<String> list = negocioMantenimiento.cargarDatosMantenimientoToListStr();
-        vista.setListadoMantenimiento(list);
-        vista.setAdapterMantenimientos(new ArrayAdapter<>(vista.getApplicationContext(), android.R.layout.simple_list_item_1, list));
-        vista.getListViewMantenimientos().setAdapter(vista.getAdapterMantenimientos());
-        if (list.isEmpty()) {
-            vista.mostrarMensaje("No hay mantenimientos registrados");
-            vista.getVistaMantenimientos().setVisibility(View.GONE);
-        }else{
-            vista.getVistaMantenimientos().setVisibility(View.VISIBLE);
-        }
+    public ArrayAdapter<Map<String, String>> getAapaterListView(Context context){
+        List<Map<String,String>> lista = negocioMantenimiento.mantenimientosMap();
+        ArrayAdapter<Map<String,String>> adapter = new ArrayAdapter<Map<String,String>>(context, android.R.layout.simple_list_item_1, lista) {
+            int padding = 16;
+            @SuppressLint("SetTextI18n")
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                TextView textView = (TextView) view;
+                negocioVehiculo.getModelo().setId(Integer.parseInt(lista.get(position).get("vehiculo_id")));
+                Map<String, String> vehiculo = negocioVehiculo.getModelForId();
+                negocioMecanico.getModelo().setId(Integer.parseInt(lista.get(position).get("mecanico_id")));
+                Map<String, String> mecanico = negocioMecanico.getModeloForId();
+                String textMantenimiento = "ID: "+lista.get(position).get("ID")+
+                        " | Fecha: "+lista.get(position).get("Fecha")+
+                        "\nVehiculo: "+vehiculo.get("placa")+
+                        "\nMecanico: "+mecanico.get("nombre")+
+                        "\nKilometraje de Mantenimiento: "+lista.get(position).get("Kilometraje")+
+                        "\nDetalle: "+lista.get(position).get("Detalle")+
+                        "\nCosto Total: "+lista.get(position).get("Costo Total");
+
+                List<Map<String,String>> detalles = negocioMantenimiento.detallesMap(Integer.parseInt(lista.get(position).get("ID")));
+                String detStr = "";
+                if(!detalles.isEmpty()) {
+                    for (Map<String,String> d : detalles){
+                        negocioItem.getModelo().setId(Integer.parseInt(d.get("item_id")));
+                        Map<String,String> item = negocioItem.obtenerModeloPorId();
+                        detStr = detStr +item.get("nombre")+
+                                " | Precio: "+d.get("precio_unitario")+
+                                " | Cant.: "+d.get("cantidad")+
+                                " | Subtotal: "+d.get("subtotal")+"\n";
+                    }
+                }
+
+                textMantenimiento = textMantenimiento +" \nLista Detalle: [ \n"+detStr+" ]";
+                textView.setText(textMantenimiento);
+                textView.setPadding(padding, padding, padding, padding);
+                return view;
+            }
+        };
+        return adapter;
     }
     public void cargarVehiculos() {
-        List<String> list = negocioVehiculo.cargarDatosToSelect();
-        vista.setListadoVehiculo(list);
-        vista.setAdapterVehiculos(new ArrayAdapter<>(vista.getApplicationContext(), android.R.layout.simple_list_item_1, list));
-        vista.getSpModVehiculo().setAdapter(vista.getAdapterVehiculos());
-        if (list.isEmpty()) {
-            vista.mostrarMensaje("No hay vehiculos registrados");
-        } else {
-            vista.getSpModVehiculo().setSelection(0);
-            negocioVehiculo.setPosicion(0);
-            int idVehiculo = negocioVehiculo.obtenerModeloPorPosicion().getId();
-            int kilometraje = negocioVehiculo.obtenerModeloPorPosicion().getKilometrajeActual();
-            int calculado = kilometraje + 5000;
-            vista.setIdVehiculo(String.valueOf(idVehiculo));
-            vista.setEtKilometrajeObjetivo(String.valueOf(calculado));
-        }
+        ArrayAdapter<Map<String,String>> adapter = negocioVehiculo.getSpinnerAdapter(vista.getApplicationContext());
+        vista.getSpModVehiculo().setAdapter(adapter);
     }
     public void cargarItems() {
-        List<String> list = negocioItem.cargarDatos();
-        vista.setListadoItem(list);
-        vista.setAdapterItems(new ArrayAdapter<>(vista.getApplicationContext(), android.R.layout.simple_list_item_1, list));
-        vista.getSpModItem().setAdapter(vista.getAdapterItems());
-        if (list.isEmpty()) {
-            vista.mostrarMensaje("No hay items registrados");
-        }
+        ArrayAdapter<Map<String,String>> adapter = negocioItem.getArrayAdapterSpinner(vista.getApplicationContext());
+        vista.getSpModItem().setAdapter(adapter);
     }
     public void cargarMecanicos() {
-        List<String> list = negocioMecanico.cargarDatos();
-        vista.setListadoMecanico(list);
-        vista.setAdapterMecanicos(new ArrayAdapter<>(vista.getApplicationContext(), android.R.layout.simple_list_item_1, list));
-        vista.getSpModMecanico().setAdapter(vista.getAdapterMecanicos());
-        if (list.isEmpty()) {
-            vista.mostrarMensaje("No hay mecanicos registrados");
-        } else {
-            vista.getSpModMecanico().setSelection(0);
-            negocioMecanico.setPosicion(0);
-            int idMecanico = negocioMecanico.obtenerModeloPorPosicion().getId();
-            vista.setIdMecanico(String.valueOf(idMecanico));
-        }
+        ArrayAdapter<Map<String,String>> adapter = negocioMecanico.getArrayAdapterSpinner(vista.getApplicationContext());
+        vista.getSpModMecanico().setAdapter(adapter);
     }
     public void cargarFecha() {
         sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
@@ -223,18 +232,38 @@ public class MantenimientoDetController {
         vista.setTxtTotal(String.valueOf(negocioMantenimiento.calculoTotalDetalle()));
     }
     public void actListDetMantenimiento() {
-        List<String> list = negocioMantenimiento.cargarDatosDetMantToListStr();
-        if (list.isEmpty()) {
+        List<Map<String,String>> details = negocioMantenimiento.getDetailsMantemimiento();
+        if (details.isEmpty()) {
             vista.mostrarMensaje("No hay detalles de mantenimiento registrados");
         }
-        vista.setListadoDetalleMantenimiento(list);
-        vista.setAdapterDetalles(new ArrayAdapter<>(vista.getApplicationContext(), android.R.layout.simple_list_item_1, list));
-        vista.getListViewDetalleMantenimiento().setAdapter(vista.getAdapterDetalles());
-    }
-    public void notificarMantenimientoGuardado() {
-        notificationController.enviarNotificacion(
-                "Mantenimiento Guardado",
-                "El mantenimiento se ha registrado correctamente."
-        );
+        List<Map<String,String>> items = negocioItem.getItemOfList(negocioMantenimiento.getIdsItems());
+        List<Map<String,String>> detailsCompleto = new ArrayList<>();
+        for (int i = 0; i < details.size(); i++) {
+            Map<String,String> item = Map.of(
+                    "id", details.get(i).get("id"),
+                    "nombre", items.get(i).get("nombre"),
+                    "precio_unitario", details.get(i).get("precio_unitario"),
+                    "cantidad", details.get(i).get("cantidad"),
+                    "subtotal", details.get(i).get("subtotal")
+            );
+            detailsCompleto.add(item);
+        }
+        ArrayAdapter<Map<String,String>> adapter = new ArrayAdapter<>(vista.getApplicationContext(), android.R.layout.simple_list_item_1, detailsCompleto){
+            int padding = 16;
+            @SuppressLint("SetTextI18n")
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                TextView textView = (TextView) view;
+                String textDetalle = detailsCompleto.get(position).get("nombre")+
+                        " | Precio: "+detailsCompleto.get(position).get("precio_unitario")+
+                        " | Cant.: "+detailsCompleto.get(position).get("cantidad")+
+                        " | Subtotal: "+detailsCompleto.get(position).get("subtotal");
+                textView.setText(textDetalle);
+                textView.setPadding(padding, padding, padding, padding);
+                return view;
+            }
+        };
+        vista.getListViewDetalleMantenimiento().setAdapter(adapter);
     }
 }

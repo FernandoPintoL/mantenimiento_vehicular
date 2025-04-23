@@ -26,7 +26,7 @@ public class ItemController {
             long result = negocio.agregar();
             if (result > 0) {
                 vista.limpiarFormulario();
-                vista.cargarDatosToList();
+                vista.cargarDatosToListView();
                 vista.mostrarMensaje("Datos guardados correctamente");
             } else {
                 vista.mostrarMensaje("Error al guardar datos");
@@ -38,7 +38,7 @@ public class ItemController {
             int result = negocio.editar();
             if (result > 0) {
                 vista.limpiarFormulario();
-                vista.cargarDatosToList();
+                vista.cargarDatosToListView();
                 vista.mostrarMensaje("Datos editados correctamente");
                 vista.getBtnGuardar().setVisibility(View.VISIBLE);
                 vista.getBtnsAction().setVisibility(View.GONE);
@@ -51,7 +51,7 @@ public class ItemController {
             int result = negocio.eliminar();
             if (result > 0) {
                 vista.limpiarFormulario();
-                vista.cargarDatosToList();
+                vista.cargarDatosToListView();
                 vista.mostrarMensaje("Datos eliminados correctamente");
                 vista.getBtnGuardar().setVisibility(View.VISIBLE);
                 vista.getBtnsAction().setVisibility(View.GONE);
@@ -60,6 +60,13 @@ public class ItemController {
                 Log.d("TAG", "Error al eliminar datos");
             }
         });
+        vista.getBtnListar().setOnClickListener(v -> {
+            vista.cargarDatosToListView();
+            vista.limpiarFormulario();
+            vista.getBtnsAction().setVisibility(View.GONE);
+            vista.getBtnGuardar().setVisibility(View.VISIBLE);
+        });
+
         vista.getListView().setOnItemClickListener((parent, view, position, id) -> {
             Log.d("TAG", "Item clicked: " + position);
             vista.getBtnsAction().setVisibility(View.VISIBLE);
@@ -67,8 +74,6 @@ public class ItemController {
             negocio.setPosicion(position);
             cargarFormToList();
         });
-        vista.cargarDatosToList();
-        vista.limpiarFormulario();
     }
     public void cargarModeloFromFormulario() {
         String nombre = vista.getEtNombre().getText().toString();

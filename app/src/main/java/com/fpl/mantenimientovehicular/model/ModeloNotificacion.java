@@ -14,19 +14,23 @@ import java.util.List;
 public class ModeloNotificacion {
     private int id;
     private int idVehiculo;
+    private String title;
     private String mensaje;
     private int kilometrajeObjetivo;
+    private int intervalo_notificacion;
     private boolean activa;
     private String table = "Notificacion";
     private static DataBaseHelper dbHelper;
     private static SQLiteDatabase db;
     public ModeloNotificacion() {}
-    public ModeloNotificacion(int id, int idVehiculo, String mensaje, int kilometrajeObjetivo, boolean activa) {
+    public ModeloNotificacion(int id, int idVehiculo, String title, String mensaje, int kilometrajeObjetivo, int intervalo_notificacion, boolean activa) {
         this.id = id;
         this.idVehiculo = idVehiculo;
         this.mensaje = mensaje;
         this.kilometrajeObjetivo = kilometrajeObjetivo;
         this.activa = activa;
+        this.title = title;
+        this.intervalo_notificacion = intervalo_notificacion;
     }
     public ModeloNotificacion(Context context){
         dbHelper = new DataBaseHelper(context);
@@ -48,10 +52,12 @@ public class ModeloNotificacion {
                 throw new Exception("Error al abrir la base de datos");
             }
             ContentValues values = new ContentValues();
-            values.put("idVehiculo", modelo.getIdVehiculo());
+            values.put("vehiculo_id", modelo.getIdVehiculo());
+            values.put("titulo", modelo.getTitle());
             values.put("mensaje", modelo.getMensaje());
-            values.put("kilometrajeObjetivo", modelo.getKilometrajeObjetivo());
-            values.put("activa", modelo.isActiva());
+            values.put("kilometraje_objetivo", modelo.getKilometrajeObjetivo());
+            values.put("intervalo_notificacion", modelo.getIntervalo_notificacion());
+            values.put("activo", modelo.isActiva());
             return db.insert(table, null, values);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -63,10 +69,12 @@ public class ModeloNotificacion {
                 throw new Exception("Error al abrir la base de datos");
             }
             ContentValues values = new ContentValues();
-            values.put("idVehiculo", modelo.getIdVehiculo());
+            values.put("vehiculo_id", modelo.getIdVehiculo());
+            values.put("titulo", modelo.getTitle());
             values.put("mensaje", modelo.getMensaje());
-            values.put("kilometrajeObjetivo", modelo.getKilometrajeObjetivo());
-            values.put("activa", modelo.isActiva());
+            values.put("kilometraje_objetivo", modelo.getKilometrajeObjetivo());
+            values.put("intervalo_notificacion", modelo.getIntervalo_notificacion());
+            values.put("activo", modelo.isActiva());
             return db.update(table, values, "id=?", new String[]{String.valueOf(modelo.getId())});
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -78,106 +86,6 @@ public class ModeloNotificacion {
                 throw new Exception("Error al abrir la base de datos");
             }
             return db.delete(table, "id=?", new String[]{String.valueOf(id)});
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-    @SuppressLint("Range")
-    public int getIdVehiculoById(int id) {
-        try{
-            if (db == null) {
-                throw new Exception("Error al abrir la base de datos");
-            }
-            String query = "SELECT idVehiculo FROM " + table + " WHERE id=?";
-            Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(id)});
-            if (cursor != null && cursor.moveToFirst()) {
-                int idVehiculo = cursor.getInt(cursor.getColumnIndex("idVehiculo"));
-                cursor.close();
-                return idVehiculo;
-            }
-            return -1;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-    @SuppressLint("Range")
-    public ModeloNotificacion obtenerPorId(int id) {
-        try{
-            if (db == null) {
-                throw new Exception("Error al abrir la base de datos");
-            }
-            Cursor cursor = db.query(table, null, "id = ?",
-                    new String[]{String.valueOf(id)}, null, null, null);
-            if (cursor != null && cursor.moveToFirst()) {
-                ModeloNotificacion model = new ModeloNotificacion();
-                model.setId(cursor.getInt(cursor.getColumnIndex("id")));
-                model.setIdVehiculo(cursor.getInt(cursor.getColumnIndex("idVehiculo")));
-                model.setMensaje(cursor.getString(cursor.getColumnIndex("mensaje")));
-                model.setKilometrajeObjetivo(cursor.getInt(cursor.getColumnIndex("kilometrajeObjetivo")));
-                model.setActiva(cursor.getInt(cursor.getColumnIndex("activa")) > 0);
-                cursor.close();
-                return model;
-            }
-            return null;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-    @SuppressLint("Range")
-    public ModeloNotificacion obtenerPorIdVehiculo(int idVehiculo) {
-        try{
-            if (db == null) {
-                throw new Exception("Error al abrir la base de datos");
-            }
-            Cursor cursor = db.query(table, null, "idVehiculo = ?",
-                    new String[]{String.valueOf(idVehiculo)}, null, null, null);
-            if (cursor != null && cursor.moveToFirst()) {
-                ModeloNotificacion model = new ModeloNotificacion();
-                model.setId(cursor.getInt(cursor.getColumnIndex("id")));
-                model.setIdVehiculo(cursor.getInt(cursor.getColumnIndex("idVehiculo")));
-                model.setMensaje(cursor.getString(cursor.getColumnIndex("mensaje")));
-                model.setKilometrajeObjetivo(cursor.getInt(cursor.getColumnIndex("kilometrajeObjetivo")));
-                model.setActiva(cursor.getInt(cursor.getColumnIndex("activa")) > 0);
-                cursor.close();
-                return model;
-            }
-            return null;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-    @SuppressLint("Range")
-    public boolean existeNotificacion(int idVehiculo) {
-        try{
-            if (db == null) {
-                throw new Exception("Error al abrir la base de datos");
-            }
-            Cursor cursor = db.query(table, null, "idVehiculo = ?",
-                    new String[]{String.valueOf(idVehiculo)}, null, null, null);
-            if (cursor != null && cursor.moveToFirst()) {
-                boolean existe = cursor.getCount() > 0;
-                cursor.close();
-                return existe;
-            }
-            return false;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-    @SuppressLint("Range")
-    public boolean existeNotificacionActiva(int idVehiculo) {
-        try{
-            if (db == null) {
-                throw new Exception("Error al abrir la base de datos");
-            }
-            Cursor cursor = db.query(table, null, "idVehiculo = ? AND activa = 1",
-                    new String[]{String.valueOf(idVehiculo)}, null, null, null);
-            if (cursor != null && cursor.moveToFirst()) {
-                boolean existe = cursor.getCount() > 0;
-                cursor.close();
-                return existe;
-            }
-            return false;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -195,10 +103,41 @@ public class ModeloNotificacion {
                 do {
                     ModeloNotificacion modelo = new ModeloNotificacion();
                     modelo.setId(cursor.getInt(cursor.getColumnIndex("id")));
-                    modelo.setIdVehiculo(cursor.getInt(cursor.getColumnIndex("idVehiculo")));
+                    modelo.setIdVehiculo(cursor.getInt(cursor.getColumnIndex("vehiculo_id")));
+                    modelo.setTitle(cursor.getString(cursor.getColumnIndex("titulo")));
                     modelo.setMensaje(cursor.getString(cursor.getColumnIndex("mensaje")));
-                    modelo.setKilometrajeObjetivo(cursor.getInt(cursor.getColumnIndex("kilometrajeObjetivo")));
-                    modelo.setActiva(cursor.getInt(cursor.getColumnIndex("activa")) > 0);
+                    modelo.setKilometrajeObjetivo(cursor.getInt(cursor.getColumnIndex("kilometraje_objetivo")));
+                    modelo.setIntervalo_notificacion(cursor.getInt(cursor.getColumnIndex("intervalo_notificacion")));
+                    modelo.setActiva(cursor.getInt(cursor.getColumnIndex("activo")) > 0);
+
+                    listado.add(modelo);
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+            return listado;
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+    @SuppressLint("Range")
+    public List<ModeloNotificacion> getNotificacionesActivas() {
+        try {
+            if (db == null) {
+                throw new Exception("Error al abrir la base de datos");
+            }
+            List<ModeloNotificacion> listado = new ArrayList<>();
+            Cursor cursor = db.query(table, null, "activo = 1", null, null, null, null);
+
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    ModeloNotificacion modelo = new ModeloNotificacion();
+                    modelo.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                    modelo.setIdVehiculo(cursor.getInt(cursor.getColumnIndex("vehiculo_id")));
+                    modelo.setTitle(cursor.getString(cursor.getColumnIndex("titulo")));
+                    modelo.setMensaje(cursor.getString(cursor.getColumnIndex("mensaje")));
+                    modelo.setKilometrajeObjetivo(cursor.getInt(cursor.getColumnIndex("kilometraje_objetivo")));
+                    modelo.setIntervalo_notificacion(cursor.getInt(cursor.getColumnIndex("intervalo_notificacion")));
+                    modelo.setActiva(cursor.getInt(cursor.getColumnIndex("activo")) > 0);
 
                     listado.add(modelo);
                 } while (cursor.moveToNext());
@@ -239,5 +178,20 @@ public class ModeloNotificacion {
     }
     public void setActiva(boolean activa) {
         this.activa = activa;
+    }
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public int getIntervalo_notificacion() {
+        return intervalo_notificacion;
+    }
+
+    public void setIntervalo_notificacion(int intervalo_notificacion) {
+        this.intervalo_notificacion = intervalo_notificacion;
     }
 }

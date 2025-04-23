@@ -20,13 +20,13 @@ import com.fpl.mantenimientovehicular.negocio.NegocioMecanico;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class VistaMecanico extends AppCompatActivity {
     private NegocioMecanico negocio;
     private MecanicoController controlador;
-    private List<String> listado;
     private ListView listView;
-    private Button btnGuardar, btnEliminar, btnEditar;
+    private Button btnGuardar, btnEliminar, btnEditar, btnListar;
     private EditText etNombre, etTaller, etDireccion, etTelefono;
     private TextView idMecanico;
     private LinearLayout btnsAction;
@@ -46,18 +46,19 @@ public class VistaMecanico extends AppCompatActivity {
         btnGuardar = findViewById(R.id.btnGuardarMecanico);
         btnEliminar = findViewById(R.id.btnEliminarMecanico);
         btnEditar = findViewById(R.id.btnEditarMecanico);
+        btnListar = findViewById(R.id.btnListarMecanico);
         listView = findViewById(R.id.listViewMecanicos);
         btnsAction = findViewById(R.id.btnsActionsMecanicos);
 
         controlador.initEvents();
         limpiarFormulario();
-        cargarDatosToList();
+        cargarDatosToListView();
     }
     @Override
     protected void onResume() {
         super.onResume();
         limpiarFormulario();
-        cargarDatosToList();
+        cargarDatosToListView();
     }
     public void mostrarMensaje(String mensaje) {
         Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show();
@@ -69,16 +70,26 @@ public class VistaMecanico extends AppCompatActivity {
         etTelefono.setText("");
         idMecanico.setText("");
     }
-    public void cargarDatosToList() {
-        listado = negocio.cargarDatos();
-        if (listado.isEmpty()) {
-            mostrarMensaje("No hay datos para mostrar");
-        }
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listado);
+    public void cargarDatosToListView() {
+        List<Map<String,String>> datos = negocio.cargarDatos();
+        ArrayAdapter<Map<String,String>> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, datos){
+            @Override
+            public View getView(int position, View convertView, android.view.ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                TextView textView = view.findViewById(android.R.id.text1);
+                Map<String,String> item = datos.get(position);
+                String displayText = "ID: " + item.get("id") +
+                        "\nNombre: " + item.get("nombre") +
+                        "\nTaller: " + item.get("taller") +
+                        "\nDirección: " + item.get("direccion") +
+                        "\nTeléfono: " + item.get("telefono");
+                textView.setText(displayText);
+                // padding
+                textView.setPadding(10, 10, 10, 10);
+                return view;
+            }
+        };
         listView.setAdapter(adapter);
-    }
-    public List<String> listados(){
-        return listado;
     }
     public ListView getListView() {
         return listView;
@@ -119,10 +130,7 @@ public class VistaMecanico extends AppCompatActivity {
     public void setTelefono(String telefono) {
         etTelefono.setText(telefono);
     }
-    public String getIdMecanico() {
-        return idMecanico.getText().toString();
-    }
-    public void setIdMecanico(String id) {
-        idMecanico.setText(id);
+    public Button getBtnListar() {
+        return btnListar;
     }
 }

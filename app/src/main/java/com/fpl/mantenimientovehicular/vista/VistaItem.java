@@ -20,11 +20,11 @@ import com.fpl.mantenimientovehicular.negocio.NegocioItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class VistaItem extends AppCompatActivity {
     private NegocioItem negocio;
     private ItemController controlador;
-    private List<String> listado;
     private ListView listView;
     private Button btnGuardar, btnEditar, btnEliminar, btnListar;
     private EditText etNombre, etPrecio, etDetalle;
@@ -48,13 +48,13 @@ public class VistaItem extends AppCompatActivity {
         btnsActions = findViewById(R.id.btnsActionsItems);
         idItem = findViewById(R.id.idItem);
 
+        cargarDatosToListView();
         controlador.initEvents();
-        cargarDatosToList();
     }
     @Override
     protected void onResume() {
         super.onResume();
-        cargarDatosToList();
+        cargarDatosToListView();
     }
     public void limpiarFormulario() {
         etNombre.setText("");
@@ -64,20 +64,29 @@ public class VistaItem extends AppCompatActivity {
         btnGuardar.setVisibility(View.VISIBLE);
         btnsActions.setVisibility(View.GONE);
     }
-    public void cargarDatosToList() {
-        listado = negocio.cargarDatos();
-        if (listado.isEmpty()) {
-            mostrarMensaje("No hay datos para mostrar");
-        }
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listado);
+    public void cargarDatosToListView() {
+        List<Map<String, String>> datos = negocio.cargarDatos();
+        ArrayAdapter<Map<String, String>> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, datos){
+            @Override
+            public View getView(int position, View convertView, android.view.ViewGroup parent) {
+                Map<String, String> item = getItem(position);
+                String displayText = "ID: " + item.get("id") +
+                        "\nNombre: " + item.get("nombre") +
+                        "\nPrecio: " + item.get("precio") +
+                        "\nDetalle: " + item.get("detalle");
+                //padding
+                convertView = super.getView(position, convertView, parent);
+                convertView.setPadding(10, 10, 10, 10);
+                ((TextView) convertView).setText(displayText);
+                return convertView;
+            }
+        };
         listView.setAdapter(adapter);
     }
     public void mostrarMensaje(String mensaje) {
         Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show();
     }
-    public List<String> listados(){
-        return listado;
-    }
+
     public ListView getListView() {
         return listView;
     }
@@ -105,9 +114,6 @@ public class VistaItem extends AppCompatActivity {
     public EditText getEtDetalle() {
         return etDetalle;
     }
-    public TextView getIdItem() {
-        return idItem;
-    }
     public void setNombre(String nombre) {
         etNombre.setText(nombre);
     }
@@ -117,9 +123,4 @@ public class VistaItem extends AppCompatActivity {
     public void setDetalle(String detalle) {
         etDetalle.setText(detalle);
     }
-    public void setIdItem(String id) {
-        idItem.setText(id);
-    }
-
-
 }

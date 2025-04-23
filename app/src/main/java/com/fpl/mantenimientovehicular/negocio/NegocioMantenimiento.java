@@ -1,12 +1,18 @@
 package com.fpl.mantenimientovehicular.negocio;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import com.fpl.mantenimientovehicular.model.ModeloDetalleMantenimiento;
 import com.fpl.mantenimientovehicular.model.ModeloMantenimiento;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class NegocioMantenimiento {
     private ModeloMantenimiento mantenimiento;
@@ -16,33 +22,59 @@ public class NegocioMantenimiento {
         mantenimiento = new ModeloMantenimiento(context);
         detalleMantenimiento = new ModeloDetalleMantenimiento(context);
     }
-    public List<String> cargarDatosMantenimientoToListStr(){
+    public List<Map<String,String>> mantenimientosMap(){
         List<ModeloMantenimiento> mantenimientos = mantenimiento.obtenerTodos();
-        List<String> lista = new ArrayList<>();
+        List<Map<String,String>> lista = new ArrayList<>();
         for (ModeloMantenimiento m : mantenimientos) {
-            String itemMantenimiento = "ID: " + m.getId() + ", Fecha: " + m.getFecha() + ", Kilometraje: " + m.getKilometrajeMantenimineto() +
-                    ", Detalle: " + m.getDetalle() + ", Costo Total: " + m.getCosto_total() ;
-            List<ModeloDetalleMantenimiento> listDetalle = detalleMantenimiento.obtenerPorId(m.getId());
-            itemMantenimiento = itemMantenimiento + " | Detalles: [ "+listDetalle.size()+" ]" + " | Lista Detalle: [ ";
-            String detStr = "";
-            for (ModeloDetalleMantenimiento d : listDetalle){
-                detStr += "{ ID : "+d.getId()+" | ITEM: "+d.getItem_id()+" | Mant: "+d.getMantenimiento_id()+" , Cantidad: "+d.getCantidad()+" , Precio: "+d.getPrecio_unitario()+" , SubTotal: "+d.getSubtotal()+" } ";
-            }
-            itemMantenimiento = itemMantenimiento + detStr +" ]";
+            Map<String,String> itemMantenimiento = Map.of(
+                    "ID", String.valueOf(m.getId()),
+                    "vehiculo_id", String.valueOf(m.getVehiculo_id()),
+                    "mecanico_id", String.valueOf(m.getMecanico_id()),
+                    "Fecha", m.getFecha(),
+                    "Kilometraje", String.valueOf(m.getKilometrajeMantenimineto()),
+                    "Detalle", m.getDetalle(),
+                    "Costo Total", String.valueOf(m.getCosto_total())
+            );
             lista.add(itemMantenimiento);
         }
         return lista;
     }
-    public List<String> cargarDatosDetMantToListStr(){
-        List<String> lista = new ArrayList<>();
+    public List<Map<String, String>> detallesMap(int mantenimiento_id){
+        List<ModeloDetalleMantenimiento> detalles = detalleMantenimiento.obtenerPorId(mantenimiento_id);
+        List<Map<String, String>> lista = new ArrayList<>();
         for (ModeloDetalleMantenimiento d : detalles) {
-            String item = "Item ID: " + d.getItem_id() +
-                    ", Precio Unitario: " + d.getPrecio_unitario() +
-                    ", Cantidad: " + d.getCantidad() +
-                    ", Subtotal: " + d.getSubtotal();
+            Map<String, String> itemDetalle = Map.of(
+                    "id", String.valueOf(d.getId()),
+                    "item_id", String.valueOf(d.getItem_id()),
+                    "precio_unitario", String.valueOf(d.getPrecio_unitario()),
+                    "cantidad", String.valueOf(d.getCantidad()),
+                    "subtotal", String.valueOf(d.getSubtotal())
+            );
+            lista.add(itemDetalle);
+        }
+        return lista;
+
+    }
+    public List<Map<String,String>> getDetailsMantemimiento(){
+        List<Map<String,String>> lista = new ArrayList<>();
+        for (ModeloDetalleMantenimiento d : detalles) {
+            Map<String,String> item = Map.of(
+                    "id", String.valueOf(d.getId()),
+                    "item_id", String.valueOf(d.getItem_id()),
+                    "precio_unitario", String.valueOf(d.getPrecio_unitario()),
+                    "cantidad", String.valueOf(d.getCantidad()),
+                    "subtotal", String.valueOf(d.getSubtotal())
+            );
             lista.add(item);
         }
         return lista;
+    }
+    public List<Integer> getIdsItems(){
+        List<Integer> ids = new ArrayList<>();
+        for (ModeloDetalleMantenimiento d : detalles) {
+            ids.add(d.getItem_id());
+        }
+        return ids;
     }
     public void setDetalleMantenimientoSetToList(int item_id, double precio_unitario, double cantidad){
         double subtotal = precio_unitario * cantidad;
@@ -76,34 +108,6 @@ public class NegocioMantenimiento {
             detalles.remove(pos);
         }
     }
-    //GETTERS Y SETTERS
-    /*public ModeloMantenimiento getMantenimiento() {
-        return mantenimiento;
-    }
-    public void setMantenimiento(ModeloMantenimiento mantenimiento) {
-        this.mantenimiento = mantenimiento;
-    }
-    public ModeloDetalleMantenimiento getDetalleMantenimiento() {
-        return detalleMantenimiento;
-    }
-    public void setDetalleMantenimiento(ModeloDetalleMantenimiento detalleMantenimiento) {
-        this.detalleMantenimiento = detalleMantenimiento;
-    }
-    public List<ModeloDetalleMantenimiento> getDetalles() {
-        return detalles;
-    }
-    public void setDetalles(List<ModeloDetalleMantenimiento> detalles) {
-        this.detalles = detalles;
-    }*/
-    @Override
-    public String toString() {
-        return "NegocioMantenimiento{" +
-                "mantenimiento=" + mantenimiento +
-                ", detalleMantenimiento=" + detalleMantenimiento +
-                ", detalles=" + detalles +
-                '}';
-    }
-
     public void limpiarDetalles() {
         if (detalles != null) {
             detalles.clear();

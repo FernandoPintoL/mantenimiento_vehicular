@@ -12,8 +12,9 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Gestion de Mecanico"
+            android:text="GESTION DE MECANICOS"
             android:textAlignment="center"
+            android:textStyle="bold"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
         <LinearLayout
@@ -26,44 +27,72 @@
                 android:layout_height="wrap_content"
                 android:text=""/>
 
-            <EditText
-                android:id="@+id/etNombre"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nombre"
-                android:inputType="text"
-                android:layout_marginTop="8dp" />
-
-            <EditText
-                android:id="@+id/etTaller"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nombre: " />
+                <EditText
+                    android:id="@+id/etNombre"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Nombre"
+                    android:inputType="text"/>
+            </LinearLayout>
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Taller"
-                android:inputType="text" />
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Taller: " />
+                <EditText
+                    android:id="@+id/etTaller"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Taller"
+                    android:inputType="text" />
+            </LinearLayout>
 
-            <EditText
-                android:id="@+id/etDireccion"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Direccion: " />
+                <EditText
+                    android:id="@+id/etDireccion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Direccion"
+                    android:inputType="text" />
+            </LinearLayout>
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Direccion"
-                android:inputType="text"
-                android:layout_marginTop="8dp" />
-
-            <EditText
-                android:id="@+id/etTelefono"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="+59173682145"
-                android:inputType="phone"
-                android:layout_marginTop="8dp" />
-
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Telefono: " />
+                <EditText
+                    android:id="@+id/etTelefono"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="+59173682145"
+                    android:inputType="phone"/>
+            </LinearLayout>
             <Button
                 android:id="@+id/btnGuardarMecanico"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Guardar"
                 android:layout_marginTop="16dp" />
-
             <LinearLayout
                 android:id="@+id/btnsActionsMecanicos"
                 android:layout_width="match_parent"
@@ -89,13 +118,17 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="end">
-
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="MECANICOS REGISTRADOS"/>
             <Button
                 android:id="@+id/btnListarMecanico"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:text="Listar"
                 android:visibility="visible" />
         </LinearLayout>
@@ -103,8 +136,9 @@
         <ListView
             android:id="@+id/listViewMecanicos"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="16dp" />
+            android:layout_height="400dp"
+            android:layout_marginTop="16dp"
+            android:nestedScrollingEnabled="true" />
 
     </LinearLayout>
 
