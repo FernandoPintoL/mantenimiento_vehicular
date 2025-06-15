@@ -1,5 +1,4 @@
 package com.fpl.mantenimientovehicular.vista;
-
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -9,16 +8,12 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.fpl.mantenimientovehicular.R;
 import com.fpl.mantenimientovehicular.controller.VehiculoController;
 import com.fpl.mantenimientovehicular.negocio.NegocioVehiculo;
-
 import java.util.List;
 import java.util.Map;
-
 public class VistaVehiculo extends AppCompatActivity {
     private VehiculoController controlador;
     private NegocioVehiculo negocio;
@@ -74,11 +69,6 @@ public class VistaVehiculo extends AppCompatActivity {
                             "Kilometraje Actual: " + item.get("kilometrajeActual") + "\n" +
                             "Kilometraje Esperado: " + item.get("kilometrajeEsperado");
                     ((TextView) view).setText(text);
-                    /*if (Integer.parseInt(item.get("kilometrajeActual")) > Integer.parseInt(item.get("kilometrajeEsperado"))) {
-                        view.setBackgroundColor(getResources().getColor(R.color.red));
-                    } else {
-                        view.setBackgroundColor(getResources().getColor(R.color.green));
-                    }*/
                     // como cambiarle el padding
                     ((TextView) view).setPadding(16, 16, 16, 16);
                 }

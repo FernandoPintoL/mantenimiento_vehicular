@@ -148,7 +148,6 @@ public class ModeloNotificacion {
             throw new RuntimeException(e);
         }
     }
-
     public int getId() {
         return id;
     }
@@ -182,15 +181,12 @@ public class ModeloNotificacion {
     public String getTitle() {
         return title;
     }
-
     public void setTitle(String title) {
         this.title = title;
     }
-
     public int getIntervalo_notificacion() {
         return intervalo_notificacion;
     }
-
     public void setIntervalo_notificacion(int intervalo_notificacion) {
         this.intervalo_notificacion = intervalo_notificacion;
     }

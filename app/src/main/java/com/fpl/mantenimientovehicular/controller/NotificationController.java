@@ -7,17 +7,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-
 import com.fpl.mantenimientovehicular.negocio.NegocioNotificacion;
 import com.fpl.mantenimientovehicular.negocio.NegocioVehiculo;
 import com.fpl.mantenimientovehicular.service.AlarmaKilometraje;
 import com.fpl.mantenimientovehicular.vista.VistaNotificacion;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 public class NotificationController {
     private VistaNotificacion vista;
@@ -71,34 +67,59 @@ public class NotificationController {
             getDatosOfForm();
             long result = negocio.agregar();
             if (result > 0) {
-                negocio.enviarNotificacion(vista.getApplicationContext(),"Notificación Guardada", "La notificación se ha guardado correctamente.");
+                negocio.enviarNotificacion(
+                        "NORMAL",
+                        vista.getApplicationContext(),
+                        "Notificación Guardada",
+                        "La notificación se ha guardado correctamente.");
                 vista.limpiarCampos();
                 vista.cargarAdapterView();
                 listenNotificaciones();
             } else {
-                negocio.enviarNotificacion(vista.getApplicationContext(),"Error", "No se pudo guardar la notificación.");
+                negocio.enviarNotificacion(
+                        "NORMAL",
+                        vista.getApplicationContext(),
+                        "Error",
+                        "No se pudo guardar la notificación.");
             }
         });
         vista.getBtnEliminar().setOnClickListener(v->{
             getDatosOfForm();
             int result = negocio.eliminar();
             if (result > 0) {
-                negocio.enviarNotificacion(vista.getApplicationContext(),"Notificación Eliminada", "La notificación se ha eliminado correctamente.");
+                negocio.enviarNotificacion(
+                        "NORMAL",
+                        vista.getApplicationContext(),
+                        "Notificación Eliminada",
+                        "La notificación se ha eliminado correctamente.");
                 vista.limpiarCampos();
                 vista.cargarAdapterView();
             } else {
-                negocio.enviarNotificacion(vista.getApplicationContext(),"Error", "No se pudo eliminar la notificación.");
+                negocio.enviarNotificacion(
+                        "NORMAL",
+                        vista.getApplicationContext(),
+                        "Error",
+                        "No se pudo eliminar la notificación.");
             }
         });
         vista.getBtnModificar().setOnClickListener(v->{
             getDatosOfForm();
             int result = negocio.editar();
             if (result > 0) {
-                negocio.enviarNotificacion(vista.getApplicationContext(),"Notificación Modificada", "La notificación se ha modificado correctamente.");
+                negocio.enviarNotificacion(
+                        "NORMAL",
+                        vista.getApplicationContext(),
+                        "Notificación Modificada",
+                        "La notificación se ha modificado correctamente.");
                 vista.limpiarCampos();
                 vista.cargarAdapterView();
             } else {
-                negocio.enviarNotificacion(vista.getApplicationContext(),"Error", "No se pudo modificar la notificación.");
+                negocio.enviarNotificacion(
+                        "NORMAL",
+                        vista.getApplicationContext(),
+                        "Error",
+                        "No se pudo modificar la notificación."
+                );
             }
         });
         vista.getBtnListar().setOnClickListener(v->{
@@ -113,7 +134,7 @@ public class NotificationController {
                 vista.getApplicationContext(),
                 android.R.layout.simple_spinner_item,
                 negocioVehiculo.cargarDatosMap()){
-            int padding = 16; // Padding en píxeles
+            final int padding = 16; // Padding en píxeles
             @SuppressLint("SetTextI18n")
             @Override
             public View getDropDownView(int position, View convertView, ViewGroup parent) {
@@ -175,20 +196,35 @@ public class NotificationController {
                 vista.getEtIntervaloNotificacion().getText().toString(),
                 vista.getSwActivoNotificacion().isChecked()
         );
+        // Actualizar la estrategia de notificación según el tipo seleccionado
+        String tipoNotificacion = vista.getSpTipoNotificacion().getSelectedItem().toString();
+        negocio.enviarNotificacion(tipoNotificacion,
+                vista.getApplicationContext(),
+                vista.getEtTitleNotificacion().getText().toString(),
+                vista.getEtMensajeNotificacion().getText().toString());
+
+        // Mostrar el tipo de notificación seleccionado
+        vista.mostrarMensaje("Tipo de notificación: " + tipoNotificacion);
     }
     public void listenNotificaciones(){
+        AlarmaKilometraje.cancelarTodasLasAlarmas(vista.getApplicationContext());
         List<Map<String, String>> notificaciones = negocio.getNotificacionesActivas();
         for (Map<String, String> n : notificaciones) {
-            if (n.get("activo").equals("1")) {
-                negocio.enviarNotificacion(vista.getApplicationContext(), n.get("titulo"), n.get("mensaje"));
+            if (Objects.equals(n.get("activo"), "1")) {
+                negocio.enviarNotificacion(
+                        "NORMAL",
+                        vista.getApplicationContext(),
+                        n.get("titulo"),
+                        n.get("mensaje")
+                );
             }
             // cual seria el valor para 30segundos
             // 30 segundos = 30 * 1000 milisegundos
             int interval = negocio.convertirTiempoAMilisegundos(n.get("intervalo_notificacion"));
             AlarmaKilometraje.programarAlarmaRecurrente(
                     vista.getApplicationContext(),
-                    n.get("vehiculo_id"),
-                    n.get("kilometraje_objetivo"),
+                    n.get("titulo"),
+                    n.get("mensaje"),
                     interval);
         }
     }

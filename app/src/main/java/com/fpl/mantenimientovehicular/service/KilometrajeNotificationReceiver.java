@@ -19,7 +19,6 @@ public class KilometrajeNotificationReceiver extends BroadcastReceiver {
         String mensaje = intent.getStringExtra("MENSAJE");
         mostrarNotificacion(context,titulo, mensaje);
     }
-
     private void mostrarNotificacion(Context context, String titulo, String mensaje) {
         // aqui falta pasar el mensaje y titulo a la notificacion
         NotificationManager notificationManager = (NotificationManager)

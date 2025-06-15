@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/tvTitulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Generador de Diagramas de Secuencia"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/tvInstrucciones"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Seleccione una clase y opcionalmente un método para generar un diagrama de secuencia."
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/tvTitulo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/tvClaseLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Clase:"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/tvInstrucciones"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Spinner
+        android:id="@+id/spinnerClases"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintTop_toTopOf="@id/tvClaseLabel"
+        app:layout_constraintBottom_toBottomOf="@id/tvClaseLabel"
+        app:layout_constraintStart_toEndOf="@id/tvClaseLabel"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/tvMetodoLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Método (opcional):"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/spinnerClases"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Spinner
+        android:id="@+id/spinnerMetodos"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintTop_toTopOf="@id/tvMetodoLabel"
+        app:layout_constraintBottom_toBottomOf="@id/tvMetodoLabel"
+        app:layout_constraintStart_toEndOf="@id/tvMetodoLabel"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/tvProfundidadLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Profundidad:"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/spinnerMetodos"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <SeekBar
+        android:id="@+id/seekBarProfundidad"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:max="5"
+        android:progress="2"
+        app:layout_constraintTop_toTopOf="@id/tvProfundidadLabel"
+        app:layout_constraintBottom_toBottomOf="@id/tvProfundidadLabel"
+        app:layout_constraintStart_toEndOf="@id/tvProfundidadLabel"
+        app:layout_constraintEnd_toStartOf="@id/tvProfundidadValor" />
+
+    <TextView
+        android:id="@+id/tvProfundidadValor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2"
+        android:minWidth="30dp"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="@id/seekBarProfundidad"
+        app:layout_constraintBottom_toBottomOf="@id/seekBarProfundidad"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/btnGenerarDiagrama"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Generar Diagrama de Secuencia"
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toBottomOf="@id/seekBarProfundidad"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toBottomOf="@id/btnGenerarDiagrama"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/tvFlujoTitulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Generar Diagrama de Flujo"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/divider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/tvFlujoLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Flujo:"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/tvFlujoTitulo"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Spinner
+        android:id="@+id/spinnerFlujos"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintTop_toTopOf="@id/tvFlujoLabel"
+        app:layout_constraintBottom_toBottomOf="@id/tvFlujoLabel"
+        app:layout_constraintStart_toEndOf="@id/tvFlujoLabel"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/btnGenerarFlujo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Generar Diagrama de Flujo"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/spinnerFlujos"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/tvResultado"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text=""
+        android:textStyle="italic"
+        app:layout_constraintTop_toBottomOf="@id/btnGenerarFlujo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/tvUbicacionInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Los diagramas se guardan en la carpeta de archivos externos de la aplicación."
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/tvResultado"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/btnAbrirCarpeta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Abrir Carpeta de Diagramas"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@color/green"
+        app:layout_constraintTop_toBottomOf="@id/tvUbicacionInfo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/btnMostrarProgramas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="¿Con qué programa puedo ver los diagramas?"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@color/blue"
+        app:layout_constraintTop_toBottomOf="@id/btnAbrirCarpeta"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,15 +1,8 @@
 package com.fpl.mantenimientovehicular.negocio;
-
 import android.annotation.SuppressLint;
-import android.app.NotificationManager;
 import android.content.Context;
-import android.util.Log;
-
-import androidx.core.app.NotificationCompat;
-
-import com.fpl.mantenimientovehicular.controller.NotificationHelper;
 import com.fpl.mantenimientovehicular.model.ModeloNotificacion;
-import com.fpl.mantenimientovehicular.service.AlarmaKilometraje;
+import com.fpl.mantenimientovehicular.strategy.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,9 +10,21 @@ import java.util.List;
 import java.util.Map;
 
 public class NegocioNotificacion {
-    private ModeloNotificacion modelo;
+    private final ModeloNotificacion modelo;
+    private final NotificationContext notificationContext;
+    private final Map<String, NotificationStrategy> estrategias = new HashMap<>();
     public NegocioNotificacion(Context context) {
         modelo = new ModeloNotificacion(context);
+        // Inicializar el contexto con la estrategia normal por defecto
+        notificationContext = new NotificationContext();
+        // cargar tipos de notificación
+        cargarEstrategias();
+    }
+    public void cargarEstrategias() {
+        // Cargar las estrategias de notificación
+        estrategias.put("NORMAL", new NotificacionNormalStrategy());
+        estrategias.put("URGENTE", new NotificacionUrgenteStrategy());
+        estrategias.put("SILENCIOSA", new NotificacionSilenciosaStrategy());
     }
     public void cargarFormulario(int id, int idVehiculo, String title ,String mensaje, int kilometrajeObjetivo, String intervalo_notificacion,boolean activa) {
         int intervalo = convertirTiempoAMilisegundos(intervalo_notificacion);
@@ -31,6 +36,7 @@ public class NegocioNotificacion {
         modelo.setIntervalo_notificacion(intervalo);
         modelo.setActiva(activa);
     }
+    //cargar datos a la vista
     public List<Map<String, String>> cargarDatos() {
         List<ModeloNotificacion> datos = modelo.obtenerTodos();
         List<Map<String, String>> list = new ArrayList<>();
@@ -70,8 +76,7 @@ public class NegocioNotificacion {
         int minutos = Integer.parseInt(partes[1]);
 
         // Convertir a milisegundos
-        int milisegundos = (horas * 60 * 60 * 1000) + (minutos * 60 * 1000);
-        return milisegundos;
+        return (horas * 60 * 60 * 1000) + (minutos * 60 * 1000);
     }
     @SuppressLint("DefaultLocale")
     public String convertirMilisegundosATiempo(int milisegundos) {
@@ -81,24 +86,6 @@ public class NegocioNotificacion {
 
         // Formatear el tiempo en HH:mm
         return String.format("%02d:%02d", horas, minutos);
-    }
-    public void enviarNotificacion(Context context, String titulo, String mensaje) {
-        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        // Crear la notificación
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NotificationHelper.CHANNEL_ID)
-                .setSmallIcon(android.R.drawable.ic_dialog_info) // Asegúrate de que este icono exista
-                .setContentTitle(titulo)
-                .setContentText(mensaje)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setAutoCancel(true);
-
-        // Enviar la notificación
-        if (manager != null) {
-            manager.notify(NotificationHelper.NOTIFICATION_ID, builder.build());
-        } else {
-            Log.e("NotificationController", "NotificationManager es nulo");
-        }
     }
     public List<Map<String,String>> getNotificacionesActivas() {
         List<ModeloNotificacion> datos = modelo.getNotificacionesActivas();
@@ -116,5 +103,19 @@ public class NegocioNotificacion {
             list.add(map);
         }
         return list;
+    }
+    public void ajustarEstrategias(String tipo) {
+        NotificationStrategy strategy = estrategias.get(tipo.toUpperCase());
+        if (strategy == null) {
+            strategy = new NotificacionNormalStrategy();
+        }
+        notificationContext.setStrategy(strategy);
+    }
+    public void enviarNotificacion(String tipoNotificacion, Context context, String titulo, String mensaje) {
+        ajustarEstrategias(tipoNotificacion);
+        notificationContext.executeStrategy(context, titulo, mensaje);
+    }
+    public String[] getTiposNotificacion() {
+        return estrategias.keySet().toArray(new String[0]);
     }
 }

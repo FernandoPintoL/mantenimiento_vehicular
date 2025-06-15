@@ -1,17 +1,11 @@
 package com.fpl.mantenimientovehicular.service;
-
-import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
-
 import com.fpl.mantenimientovehicular.model.ModeloVehiculo;
-
 public class AlarmaKilometraje {
     public static void programarAlarmaRecurrente(Context context,String titulo, String mensaje, int intervaloMillis) {
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, KilometrajeNotificationReceiver.class);
         intent.putExtra("TITULO", titulo);
         intent.putExtra("MENSAJE", mensaje);
@@ -22,15 +16,32 @@ public class AlarmaKilometraje {
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
 
-        // Configura la alarma recurrente
-        alarmManager.setRepeating(
-                AlarmManager.RTC_WAKEUP,
-                System.currentTimeMillis() + intervaloMillis, // Primera ejecución
-                intervaloMillis, // Intervalo de repetición
-                pendingIntent
-        );
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager != null) {
+            alarmManager.setRepeating(
+                    AlarmManager.RTC_WAKEUP,
+                    System.currentTimeMillis() + intervaloMillis,
+                    intervaloMillis,
+                    pendingIntent
+            );
+        }
     }
+    public static void cancelarTodasLasAlarmas(Context context) {
+        Intent intent = new Intent(context, KilometrajeNotificationReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                context,
+                0,
+                intent,
+                PendingIntent.FLAG_NO_CREATE | PendingIntent.FLAG_IMMUTABLE // Agregar FLAG_IMMUTABLE
+        );
 
+        if (pendingIntent != null) {
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            if (alarmManager != null) {
+                alarmManager.cancel(pendingIntent);
+            }
+        }
+    }
     private static long calcularMomentoNotificacion(ModeloVehiculo vehiculo, int kilometrajeObjetivo) {
         // Aquí deberías implementar tu lógica para estimar cuándo se alcanzará el km
         // Esto es un ejemplo simplificado:

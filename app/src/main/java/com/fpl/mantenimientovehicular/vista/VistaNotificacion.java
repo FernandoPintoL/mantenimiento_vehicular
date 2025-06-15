@@ -1,6 +1,7 @@
 package com.fpl.mantenimientovehicular.vista;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.TimePickerDialog;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -24,6 +25,7 @@ import androidx.core.content.ContextCompat;
 import com.fpl.mantenimientovehicular.R;
 import com.fpl.mantenimientovehicular.controller.NotificationController;
 import com.fpl.mantenimientovehicular.negocio.NegocioNotificacion;
+import com.fpl.mantenimientovehicular.strategy.NotificationContext;
 
 import java.util.Calendar;
 import java.util.List;
@@ -34,7 +36,8 @@ public class VistaNotificacion extends AppCompatActivity {
     private NegocioNotificacion negocio;
     private TextView idNotificacion, idVehiculoNotificacion;
     private EditText etTitleNotificacion, etMensajeNotificacion, etIntervaloNotificacion, etKilometrajeObjetivoNotificacion;
-    private Spinner spVehiculo;
+    private Spinner spVehiculo, spTipoNotificacion;
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     private Switch swActivoNotificacion;
     private ListView listViewNotificaciones;
     private LinearLayout btnsActionsNotify, idNotificacionLayout;
@@ -49,6 +52,7 @@ public class VistaNotificacion extends AppCompatActivity {
         controller = new NotificationController(this, negocio);
 
         spVehiculo = findViewById(R.id.spVehiculoNotificacion);
+        spTipoNotificacion = findViewById(R.id.spTipoNotificacion);
         swActivoNotificacion = findViewById(R.id.swActivoNotificacion);
         etTitleNotificacion = findViewById(R.id.etTitleNotificacion);
         etMensajeNotificacion = findViewById(R.id.etMensajeNotificacion);
@@ -63,6 +67,9 @@ public class VistaNotificacion extends AppCompatActivity {
         btnModificar = findViewById(R.id.btnEditarNotify);
         btnListar = findViewById(R.id.btnListarNotify);
         btnGuardar = findViewById(R.id.btnGuardarNotify);
+
+        // Configurar el spinner de tipo de notificación
+        configurarSpinnerTipoNotificacion();
 
         cargarAdapterView();
         controller.initEvents();
@@ -113,7 +120,7 @@ public class VistaNotificacion extends AppCompatActivity {
         // Crear el TimePickerDialog
         TimePickerDialog timePickerDialog = new TimePickerDialog(this, (view, selectedHour, selectedMinute) -> {
             // Formatear la hora seleccionada y establecerla en el EditText
-            String formattedTime = String.format("%02d:%02d", selectedHour, selectedMinute);
+            @SuppressLint("DefaultLocale") String formattedTime = String.format("%02d:%02d", selectedHour, selectedMinute);
             etIntervaloNotificacion.setText(formattedTime);
         }, hour, minute, true); // true para formato de 24 horas
 
@@ -147,9 +154,7 @@ public class VistaNotificacion extends AppCompatActivity {
     public EditText getEtIntervaloNotificacion() {
         return etIntervaloNotificacion;
     }
-    public void setEtIntervaloNotificacion(String etIntervaloNotificacion) {
-        this.etIntervaloNotificacion.setText(etIntervaloNotificacion);
-    }
+    public void setEtIntervaloNotificacion(String etIntervaloNotificacion) { this.etIntervaloNotificacion.setText(etIntervaloNotificacion); }
     public Switch getSwActivoNotificacion() {
         return swActivoNotificacion;
     }
@@ -182,5 +187,20 @@ public class VistaNotificacion extends AppCompatActivity {
     }
     public LinearLayout getIdNotificacionLayout() {
         return idNotificacionLayout;
+    }
+    public Spinner getSpTipoNotificacion() {return spTipoNotificacion;}
+    private void configurarSpinnerTipoNotificacion() {
+        // Crear un array con los nombres de los tipos de notificación
+        String[] tiposNotificacion = negocio.getTiposNotificacion();
+        // Crear un adaptador para el spinner
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+            this, android.R.layout.simple_spinner_item, tiposNotificacion
+        );
+        // Especificar el layout para el dropdown
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Asignar el adaptador al spinner
+        spTipoNotificacion.setAdapter(adapter);
+        // Establecer el valor por defecto (Normal)
+        spTipoNotificacion.setSelection(0);
     }
 }
