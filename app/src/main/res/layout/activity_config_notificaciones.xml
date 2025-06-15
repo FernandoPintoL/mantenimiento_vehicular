@@ -102,15 +102,100 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Intervalo de Notificación"/>
-                <EditText
+                    android:text="Tipo de Intervalo"/>
+                <Spinner
+                    android:id="@+id/spTipoIntervalo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/etIntervaloNotificacion"
-                    android:inputType="time"
-                    android:clickable="true"
-                    android:focusable="false"
-                    android:hint="Intervalo"/>
+                    android:layout_marginTop="4dp"/>
+
+                <!-- Contenedor para los diferentes tipos de intervalo -->
+                <LinearLayout
+                    android:id="@+id/layoutIntervaloHoras"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="8dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cada cuántas horas y minutos"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <EditText
+                            android:id="@+id/etCantidadHoras"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:inputType="number"
+                            android:hint="Horas"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=" : "
+                            android:textSize="18sp"
+                            android:layout_gravity="center_vertical"/>
+                        <EditText
+                            android:id="@+id/etCantidadMinutos"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:inputType="number"
+                            android:hint="Minutos"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutIntervaloDias"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="8dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cada cuántos días"/>
+                    <EditText
+                        android:id="@+id/etCantidadDias"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:hint="Número de días"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="A qué hora"/>
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/etIntervaloNotificacion"
+                        android:inputType="time"
+                        android:clickable="true"
+                        android:focusable="false"
+                        android:hint="Hora específica"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutIntervaloDiario"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="8dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Todos los días a esta hora"/>
+                    <EditText
+                        android:id="@+id/etHoraDiaria"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="time"
+                        android:clickable="true"
+                        android:focusable="false"
+                        android:hint="Hora específica"/>
+                </LinearLayout>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -140,9 +225,9 @@
                 android:orientation="vertical"
                 android:layout_marginTop="8dp">
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Tipo de Notificación"/>
+                    android:text="Tipo de Notificación (RECURRENTE para mantenimientos futuros)"/>
                 <Spinner
                     android:id="@+id/spTipoNotificacion"
                     android:layout_width="match_parent"

@@ -172,7 +172,16 @@ public class NotificationController {
     }
     public void cargarTime(){
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
-        vista.setEtIntervaloNotificacion(sdf.format(new Date()));
+        String horaActual = sdf.format(new Date());
+
+        // Establecer la hora actual en todos los campos de hora
+        vista.setEtIntervaloNotificacion(horaActual);
+        vista.getEtHoraDiaria().setText(horaActual);
+
+        // Establecer valores predeterminados para los campos numéricos
+        vista.getEtCantidadHoras().setText("1");
+        vista.getEtCantidadMinutos().setText("0");
+        vista.getEtCantidadDias().setText("1");
     }
     public void getDatosOfForm(){
         // obtener el id de la notificacion si existe
@@ -187,22 +196,95 @@ public class NotificationController {
             return;
         }
         int id = Integer.parseInt(vista.getIdNotificacion().getText().toString().trim()); // Obtener el ID de la notificación
+        // Determinar el intervalo según el tipo seleccionado
+        String tipoIntervalo = vista.getSpTipoIntervalo().getSelectedItem().toString();
+        int intervaloMillis = 0;
+        String descripcionIntervalo = "";
+
+        try {
+            if (tipoIntervalo.equals(vista.getTIPO_INTERVALO_HORAS())) {
+                // Intervalo en horas y minutos
+                String cantidadHorasStr = vista.getEtCantidadHoras().getText().toString();
+                String cantidadMinutosStr = vista.getEtCantidadMinutos().getText().toString();
+
+                if (cantidadHorasStr.isEmpty() && cantidadMinutosStr.isEmpty()) {
+                    vista.mostrarMensaje("Debe ingresar la cantidad de horas o minutos");
+                    return;
+                }
+
+                int cantidadHoras = cantidadHorasStr.isEmpty() ? 0 : Integer.parseInt(cantidadHorasStr);
+                int cantidadMinutos = cantidadMinutosStr.isEmpty() ? 0 : Integer.parseInt(cantidadMinutosStr);
+
+                if (cantidadHoras == 0 && cantidadMinutos == 0) {
+                    vista.mostrarMensaje("El intervalo debe ser mayor a cero");
+                    return;
+                }
+
+                intervaloMillis = negocio.calcularIntervaloHoras(cantidadHoras, cantidadMinutos);
+
+                String horasTexto = cantidadHoras > 0 ? cantidadHoras + " horas" : "";
+                String minutosTexto = cantidadMinutos > 0 ? cantidadMinutos + " minutos" : "";
+                String conector = cantidadHoras > 0 && cantidadMinutos > 0 ? " y " : "";
+
+                descripcionIntervalo = "cada " + horasTexto + conector + minutosTexto;
+
+            } else if (tipoIntervalo.equals(vista.getTIPO_INTERVALO_DIAS())) {
+                // Intervalo en días a una hora específica
+                String cantidadDiasStr = vista.getEtCantidadDias().getText().toString();
+                String horaEspecifica = vista.getEtIntervaloNotificacion().getText().toString();
+                if (cantidadDiasStr.isEmpty()) {
+                    vista.mostrarMensaje("Debe ingresar la cantidad de días");
+                    return;
+                }
+                if (horaEspecifica.isEmpty()) {
+                    vista.mostrarMensaje("Debe seleccionar una hora específica");
+                    return;
+                }
+                int cantidadDias = Integer.parseInt(cantidadDiasStr);
+                intervaloMillis = (int) negocio.calcularIntervaloDias(cantidadDias, horaEspecifica);
+                descripcionIntervalo = "cada " + cantidadDias + " días a las " + horaEspecifica;
+
+            } else if (tipoIntervalo.equals(vista.getTIPO_INTERVALO_DIARIO())) {
+                // Intervalo diario a una hora específica
+                String horaEspecifica = vista.getEtHoraDiaria().getText().toString();
+
+                if (horaEspecifica.isEmpty()) {
+                    vista.mostrarMensaje("Debe seleccionar una hora específica");
+                    return;
+                }
+
+                intervaloMillis = (int) negocio.calcularIntervaloDiario(horaEspecifica);
+                descripcionIntervalo = "todos los días a las " + horaEspecifica;
+            }
+        } catch (NumberFormatException e) {
+            vista.mostrarMensaje("Error en el formato de los números ingresados");
+            return;
+        }
+        // Guardar el intervalo calculado en el modelo
         negocio.cargarFormulario(
                 id,
                 Integer.parseInt(vista.getIdVehiculoNotificacion().getText().toString()),
                 vista.getEtTitleNotificacion().getText().toString(),
                 vista.getEtMensajeNotificacion().getText().toString(),
                 Integer.parseInt(vista.getEtKilometrajeObjetivoNotificacion().getText().toString()),
-                vista.getEtIntervaloNotificacion().getText().toString(),
+                String.valueOf(intervaloMillis), // Guardar directamente en milisegundos
                 vista.getSwActivoNotificacion().isChecked()
         );
         // Actualizar la estrategia de notificación según el tipo seleccionado
         String tipoNotificacion = vista.getSpTipoNotificacion().getSelectedItem().toString();
-        negocio.enviarNotificacion(tipoNotificacion,
-                vista.getApplicationContext(),
-                vista.getEtTitleNotificacion().getText().toString(),
-                vista.getEtMensajeNotificacion().getText().toString());
+        String titulo = vista.getEtTitleNotificacion().getText().toString();
+        String mensaje = vista.getEtMensajeNotificacion().getText().toString();
 
+        // Si es tipo RECURRENTE, mostrar mensaje específico con el intervalo
+        if ("RECURRENTE".equals(tipoNotificacion)) {
+            vista.mostrarMensaje("Configurando notificación recurrente para mantenimientos futuros " + descripcionIntervalo);
+        }
+        // Enviar la notificación con la estrategia seleccionada
+        negocio.enviarNotificacion(
+                tipoNotificacion,
+                vista.getApplicationContext(),
+                titulo,
+                mensaje);
         // Mostrar el tipo de notificación seleccionado
         vista.mostrarMensaje("Tipo de notificación: " + tipoNotificacion);
     }
@@ -211,21 +293,25 @@ public class NotificationController {
         List<Map<String, String>> notificaciones = negocio.getNotificacionesActivas();
         for (Map<String, String> n : notificaciones) {
             if (Objects.equals(n.get("activo"), "1")) {
+                // Mostrar notificación inmediata
                 negocio.enviarNotificacion(
                         "NORMAL",
                         vista.getApplicationContext(),
                         n.get("titulo"),
                         n.get("mensaje")
                 );
+
+                // Programar notificaciones recurrentes para mantenimientos futuros
+                int interval = negocio.convertirTiempoAMilisegundos(n.get("intervalo_notificacion"));
+                if (interval > 0) {
+                    negocio.enviarNotificacionRecurrente(
+                            vista.getApplicationContext(),
+                            n.get("titulo"),
+                            n.get("mensaje"),
+                            interval
+                    );
+                }
             }
-            // cual seria el valor para 30segundos
-            // 30 segundos = 30 * 1000 milisegundos
-            int interval = negocio.convertirTiempoAMilisegundos(n.get("intervalo_notificacion"));
-            AlarmaKilometraje.programarAlarmaRecurrente(
-                    vista.getApplicationContext(),
-                    n.get("titulo"),
-                    n.get("mensaje"),
-                    interval);
         }
     }
 }
