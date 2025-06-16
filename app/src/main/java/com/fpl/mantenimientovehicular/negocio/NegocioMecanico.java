@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.fpl.mantenimientovehicular.proxy.IMecanicoModel;
+import com.fpl.mantenimientovehicular.proxy.MecanicoModelProxy;
 import com.fpl.mantenimientovehicular.model.ModeloMecanico;
 
 import java.util.ArrayList;
@@ -15,10 +17,10 @@ import java.util.List;
 import java.util.Map;
 
 public class NegocioMecanico {
-    private ModeloMecanico modelo;
+    private IMecanicoModel modelo;
     private int posicion;
     public NegocioMecanico(Context context){
-        modelo = new ModeloMecanico(context);
+        modelo = new MecanicoModelProxy(context);
     }
     public List<Map<String,String>> cargarDatos(){
         List<ModeloMecanico> datos = modelo.obtenerTodos();
@@ -84,10 +86,18 @@ public class NegocioMecanico {
         return adapter;
     }
     public void cargarFormulario(int id, String nombre, String taller, String direccion, String telefono){
-        modelo = new ModeloMecanico(id, nombre, taller, direccion, telefono);
+        modelo = new MecanicoModelProxy(id, nombre, taller, direccion, telefono);
     }
     public long agregar(){
-        return modelo.agregar(modelo);
+        // Create a new ModeloMecanico with the data from the proxy
+        ModeloMecanico mecanicoData = new ModeloMecanico(
+            modelo.getId(),
+            modelo.getNombre(),
+            modelo.getTaller(),
+            modelo.getDireccion(),
+            modelo.getTelefono()
+        );
+        return modelo.agregar(mecanicoData);
     }
     public int eliminar(){
         return modelo.eliminar(modelo.getId());
@@ -95,7 +105,16 @@ public class NegocioMecanico {
     public int editar(){
         int id = obtenerIdPorPosicion();
         modelo.setId(id);
-        return modelo.actualizar(modelo);
+
+        // Create a new ModeloMecanico with the data from the proxy
+        ModeloMecanico mecanicoData = new ModeloMecanico(
+            modelo.getId(),
+            modelo.getNombre(),
+            modelo.getTaller(),
+            modelo.getDireccion(),
+            modelo.getTelefono()
+        );
+        return modelo.actualizar(mecanicoData);
     }
     public int obtenerIdPorPosicion(){
         List<ModeloMecanico> datos = modelo.obtenerTodos();
@@ -111,7 +130,7 @@ public class NegocioMecanico {
     public void setPosicion(int posicion){
         this.posicion = posicion;
     }
-    public ModeloMecanico getModelo() {
+    public IMecanicoModel getModelo() {
         return modelo;
     }
 }

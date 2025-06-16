@@ -60,6 +60,7 @@ public class NegocioNotificacion {
             map.put("mensaje", notificacion.getMensaje());
             map.put("kilometraje_objetivo", String.valueOf(notificacion.getKilometrajeObjetivo()));
             map.put("intervalo_notificacion", intervalo);
+            map.put("intervalo_notificacion_ms", String.valueOf(notificacion.getIntervalo_notificacion()));
             map.put("activo", String.valueOf(notificacion.isActiva()));
             list.add(map);
         }
@@ -75,11 +76,6 @@ public class NegocioNotificacion {
     public int editar() {
         return modelo.modificar(modelo);
     }
-    /**
-     * Convierte un tiempo en formato HH:mm a milisegundos
-     * @param tiempo Tiempo en formato HH:mm
-     * @return Tiempo en milisegundos
-     */
     public int convertirTiempoAMilisegundos(String tiempo) {
         // Verificar si el tiempo está en el formato correcto (HH:mm) o si es nulo o vacío retorna  0
         if (tiempo == null || tiempo.isEmpty() || !tiempo.matches("\\d{2}:\\d{2}")) {
@@ -93,22 +89,10 @@ public class NegocioNotificacion {
         // Convertir a milisegundos
         return (horas * 60 * 60 * 1000) + (minutos * 60 * 1000);
     }
-    /**
-     * Calcula el intervalo en milisegundos para notificaciones cada X horas y Y minutos
-     * @param cantidadHoras Número de horas entre cada notificación
-     * @param cantidadMinutos Número de minutos entre cada notificación
-     * @return Intervalo en milisegundos
-     */
     public int calcularIntervaloHoras(int cantidadHoras, int cantidadMinutos) {
         // Convertir horas y minutos a milisegundos
         return (cantidadHoras * 60 * 60 * 1000) + (cantidadMinutos * 60 * 1000);
     }
-    /**
-     * Calcula el intervalo en milisegundos para notificaciones cada X días a una hora específica
-     * @param cantidadDias Número de días entre cada notificación
-     * @param horaEspecifica Hora específica en formato HH:mm
-     * @return Intervalo en milisegundos
-     */
     public long calcularIntervaloDias(int cantidadDias, String horaEspecifica) {
         // Convertir días a milisegundos
         long intervaloBase = cantidadDias * 24 * 60 * 60 * 1000L;
@@ -141,11 +125,6 @@ public class NegocioNotificacion {
         // Para las siguientes, usar el intervalo base
         return tiempoHastaSiguiente;
     }
-    /**
-     * Calcula el intervalo en milisegundos para notificaciones diarias a una hora específica
-     * @param horaEspecifica Hora específica en formato HH:mm
-     * @return Intervalo en milisegundos
-     */
     public long calcularIntervaloDiario(String horaEspecifica) {
         // Para notificaciones diarias, el intervalo base es 24 horas
         return calcularIntervaloDias(1, horaEspecifica);
@@ -183,6 +162,7 @@ public class NegocioNotificacion {
             map.put("mensaje", notificacion.getMensaje());
             map.put("kilometraje_objetivo", String.valueOf(notificacion.getKilometrajeObjetivo()));
             map.put("intervalo_notificacion", intervalo);
+            map.put("intervalo_notificacion_ms", String.valueOf(notificacion.getIntervalo_notificacion()));
             map.put("activo", String.valueOf(notificacion.isActiva()));
             list.add(map);
         }
@@ -203,7 +183,8 @@ public class NegocioNotificacion {
             // mostrar un mensaje en consola para depuración
             if (intervalo > 0) {
                 notificationRecurrente.setIntervaloMillis(intervalo);
-                enviarNotificacionRecurrente(context, titulo, mensaje, intervalo);
+                notificationContext.setStrategy(notificationRecurrente);
+                notificationContext.executeStrategy(context, titulo, mensaje);
             } else {
                 // Si no hay intervalo válido, usar la estrategia normal
                 ajustarEstrategias("NORMAL");
@@ -215,17 +196,7 @@ public class NegocioNotificacion {
             notificationContext.executeStrategy(context, titulo, mensaje);
         }
     }
-    public void enviarNotificacionRecurrente(Context context, String titulo, String mensaje, int intervaloMillis) {
-        notificationContext.setStrategy(notificationRecurrente);
-        notificationContext.executeStrategy(context, titulo, mensaje);
-    }
     public String[] getTiposNotificacion() {
-        // Añadir "RECURRENTE" a la lista de tipos de notificación
-        /*String[] tiposEstrategias = estrategias.keySet().toArray(new String[0]);
-        String[] tiposConRecurrente = new String[tiposEstrategias.length + 1];
-        System.arraycopy(tiposEstrategias, 0, tiposConRecurrente, 0, tiposEstrategias.length);
-        tiposConRecurrente[tiposEstrategias.length] = "RECURRENTE";
-        return tiposConRecurrente;*/
         return estrategias.keySet().toArray(new String[0]);
     }
 }

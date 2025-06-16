@@ -302,13 +302,26 @@ public class NotificationController {
                 );
 
                 // Programar notificaciones recurrentes para mantenimientos futuros
-                int interval = negocio.convertirTiempoAMilisegundos(n.get("intervalo_notificacion"));
+                int interval = 0;
+                try {
+                    // Usar el valor en milisegundos directamente
+                    if (n.containsKey("intervalo_notificacion_ms")) {
+                        interval = Integer.parseInt(n.get("intervalo_notificacion_ms"));
+                    } else {
+                        // Fallback al método anterior si no está disponible el valor en ms
+                        interval = negocio.convertirTiempoAMilisegundos(n.get("intervalo_notificacion"));
+                    }
+                } catch (NumberFormatException e) {
+                    // Si hay un error al parsear, intentar con el método anterior
+                    interval = negocio.convertirTiempoAMilisegundos(n.get("intervalo_notificacion"));
+                }
+
                 if (interval > 0) {
-                    negocio.enviarNotificacionRecurrente(
+                    negocio.enviarNotificacion(
+                            "RECURRENTE",
                             vista.getApplicationContext(),
                             n.get("titulo"),
-                            n.get("mensaje"),
-                            interval
+                            n.get("mensaje")
                     );
                 }
             }

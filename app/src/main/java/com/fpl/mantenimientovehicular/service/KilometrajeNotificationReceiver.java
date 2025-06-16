@@ -53,7 +53,7 @@ public class KilometrajeNotificationReceiver extends BroadcastReceiver {
 
             // Construir la notificación con estilo mejorado
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NotificationHelper.CHANNEL_ID)
-                    .setSmallIcon(R.drawable.baseline_circle_notifications_24)
+                    .setSmallIcon(R.drawable.ic_notification_normal)
                     .setContentTitle(titulo)
                     .setContentText(mensaje)
                     .setStyle(bigTextStyle)

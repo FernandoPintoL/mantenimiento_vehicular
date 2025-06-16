@@ -6,13 +6,6 @@ import android.content.Intent;
 import com.fpl.mantenimientovehicular.model.ModeloVehiculo;
 import java.util.Calendar;
 public class AlarmaKilometraje {
-    /**
-     * Programa una alarma recurrente con un intervalo específico
-     * @param context Contexto de la aplicación
-     * @param titulo Título de la notificación
-     * @param mensaje Mensaje de la notificación
-     * @param intervaloMillis Intervalo en milisegundos entre cada notificación
-     */
     public static void programarAlarmaRecurrente(Context context, String titulo, String mensaje, int intervaloMillis) {
         Intent intent = new Intent(context, KilometrajeNotificationReceiver.class);
         intent.putExtra("TITULO", titulo);
@@ -57,14 +50,6 @@ public class AlarmaKilometraje {
             }
         }
     }
-
-    /**
-     * Programa una alarma para una hora específica del día
-     * @param context Contexto de la aplicación
-     * @param titulo Título de la notificación
-     * @param mensaje Mensaje de la notificación
-     * @param horaEspecifica Hora específica en formato HH:mm
-     */
     public static void programarAlarmaHoraEspecifica(Context context, String titulo, String mensaje, String horaEspecifica) {
         if (horaEspecifica == null || !horaEspecifica.matches("\\d{2}:\\d{2}")) {
             return;

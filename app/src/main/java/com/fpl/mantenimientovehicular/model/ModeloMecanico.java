@@ -5,14 +5,14 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 
 import com.fpl.mantenimientovehicular.database.DataBaseHelper;
+import com.fpl.mantenimientovehicular.proxy.IMecanicoModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ModeloMecanico {
+public class ModeloMecanico implements IMecanicoModel {
     private int id;
     private String nombre;
     private String taller;
@@ -20,7 +20,14 @@ public class ModeloMecanico {
     private String direccion;
     private static DataBaseHelper dbHelper;
     private static SQLiteDatabase db;
-    private String table = "Mecanico";
+    private final String table = "Mecanico";
+
+    // Implementation of getErrorMessage from IMecanicoModel interface
+    @Override
+    public String getErrorMessage() {
+        // The real model doesn't perform validation, so it doesn't have error messages
+        return "";
+    }
     public ModeloMecanico() {
     }
     public ModeloMecanico(Context context) {

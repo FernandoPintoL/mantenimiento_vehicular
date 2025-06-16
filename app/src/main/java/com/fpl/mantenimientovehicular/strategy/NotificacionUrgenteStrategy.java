@@ -22,7 +22,7 @@ public class NotificacionUrgenteStrategy implements NotificationStrategy {
 
             // Crear la notificación con alta prioridad
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NotificationHelper.CHANNEL_ID)
-                    .setSmallIcon(R.drawable.baseline_circle_notifications_24)
+                    .setSmallIcon(R.drawable.ic_notification_urgent)
                     .setContentTitle("¡URGENTE! " + titulo)
                     .setContentText(mensaje)
                     .setPriority(NotificationCompat.PRIORITY_HIGH)

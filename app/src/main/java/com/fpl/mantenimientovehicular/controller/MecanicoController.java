@@ -1,13 +1,10 @@
 package com.fpl.mantenimientovehicular.controller;
 
-import android.content.Context;
 import android.util.Log;
 import android.view.View;
 
 import com.fpl.mantenimientovehicular.negocio.NegocioMecanico;
 import com.fpl.mantenimientovehicular.vista.VistaMecanico;
-
-import java.util.List;
 
 public class MecanicoController {
     private VistaMecanico vista;
@@ -25,7 +22,15 @@ public class MecanicoController {
                 vista.cargarDatosToListView();
                 vista.mostrarMensaje("Datos guardados correctamente");
             } else {
-                vista.mostrarMensaje("Error al guardar datos");
+                // Obtener mensaje de error de validación
+                String errorMsg = negocio.getModelo().getErrorMessage();
+                if (!errorMsg.isEmpty()) {
+                    // Mostrar mensaje de error específico
+                    vista.mostrarMensaje(errorMsg);
+                } else {
+                    // Mostrar mensaje de error genérico
+                    vista.mostrarMensaje("Error al guardar datos");
+                }
                 Log.d("TAG", "Error al guardar datos");
             }
         });
@@ -39,7 +44,15 @@ public class MecanicoController {
                 vista.getBtnGuardar().setVisibility(View.VISIBLE);
                 vista.getBtnsAction().setVisibility(View.GONE);
             } else {
-                vista.mostrarMensaje("Error al editar datos");
+                // Obtener mensaje de error de validación
+                String errorMsg = negocio.getModelo().getErrorMessage();
+                if (!errorMsg.isEmpty()) {
+                    // Mostrar mensaje de error específico
+                    vista.mostrarMensaje(errorMsg);
+                } else {
+                    // Mostrar mensaje de error genérico
+                    vista.mostrarMensaje("Error al editar datos");
+                }
                 Log.d("TAG", "Error al editar datos");
             }
         });

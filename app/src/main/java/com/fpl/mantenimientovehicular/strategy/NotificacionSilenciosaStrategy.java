@@ -14,7 +14,7 @@ public class NotificacionSilenciosaStrategy implements NotificationStrategy {
             NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             // Crear la notificación silenciosa
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NotificationHelper.CHANNEL_ID)
-                    .setSmallIcon(R.drawable.baseline_circle_notifications_24)
+                    .setSmallIcon(R.drawable.ic_notification_silent)
                     .setContentTitle(titulo)
                     .setContentText(mensaje)
                     .setPriority(NotificationCompat.PRIORITY_LOW)
