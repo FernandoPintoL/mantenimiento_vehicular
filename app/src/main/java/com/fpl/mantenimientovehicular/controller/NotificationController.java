@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import androidx.core.content.ContextCompat;
 
 import com.fpl.mantenimientovehicular.negocio.NegocioNotificacion;
 import com.fpl.mantenimientovehicular.negocio.NegocioVehiculo;
@@ -14,6 +15,7 @@ import com.fpl.mantenimientovehicular.vista.VistaNotificacion;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Map;
 
 public class NotificationController {
     private VistaNotificacion vista;
@@ -47,6 +49,7 @@ public class NotificationController {
             @SuppressLint("SetTextI18n")
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                @SuppressWarnings("unchecked")
                 Map<String, String> selectedItem = (Map<String, String>) parent.getItemAtPosition(position);
                 if (selectedItem != null) {
                     vista.getIdNotificacion().setText(selectedItem.get("id"));
@@ -84,6 +87,17 @@ public class NotificationController {
             }
         });
         vista.getBtnEliminar().setOnClickListener(v->{
+            // Verificar que el ID no esté vacío antes de intentar eliminar
+            String idStr = vista.getIdNotificacion().getText().toString().trim();
+            if (idStr.isEmpty() || idStr.equals("0")) {
+                negocio.enviarNotificacion(
+                        "NORMAL",
+                        vista.getApplicationContext(),
+                        "Error",
+                        "No se ha seleccionado una notificación para eliminar.");
+                return;
+            }
+
             getDatosOfForm();
             int result = negocio.eliminar();
             if (result > 0) {
@@ -94,6 +108,10 @@ public class NotificationController {
                         "La notificación se ha eliminado correctamente.");
                 vista.limpiarCampos();
                 vista.cargarAdapterView();
+                // Ocultar los botones de acción después de eliminar
+                vista.getBtnsActionsNotify().setVisibility(View.GONE);
+                vista.getIdNotificacionLayout().setVisibility(View.GONE);
+                vista.getBtnGuardar().setVisibility(View.VISIBLE);
             } else {
                 negocio.enviarNotificacion(
                         "NORMAL",
@@ -128,9 +146,10 @@ public class NotificationController {
             vista.getIdNotificacionLayout().setVisibility(View.GONE);
         });
     }
+    @SuppressWarnings("unchecked")
     public void cargarVehiculoAdapterToSpinner() {
         // Cargar el adaptador para el Spinner de vehículos
-        ArrayAdapter<Map<String, String>> adapter = new ArrayAdapter<>(
+        ArrayAdapter<Map<String, String>> adapter = new ArrayAdapter<Map<String, String>>(
                 vista.getApplicationContext(),
                 android.R.layout.simple_spinner_item,
                 negocioVehiculo.cargarDatosMap()){
@@ -148,9 +167,9 @@ public class NotificationController {
                 textView.setPadding(padding, padding, padding, padding);
                 // Cambiar el color de fondo del Spinner según el que este seleccionado
                 if (position == vista.getSpVehiculo().getSelectedItemPosition()) {
-                    textView.setBackgroundColor(vista.getResources().getColor(android.R.color.darker_gray));
+                    textView.setBackgroundColor(ContextCompat.getColor(vista.getApplicationContext(), android.R.color.darker_gray));
                 } else {
-                    textView.setBackgroundColor(vista.getResources().getColor(android.R.color.transparent));
+                    textView.setBackgroundColor(ContextCompat.getColor(vista.getApplicationContext(), android.R.color.transparent));
                 }
                 return view;
             }
@@ -288,6 +307,7 @@ public class NotificationController {
         // Mostrar el tipo de notificación seleccionado
         vista.mostrarMensaje("Tipo de notificación: " + tipoNotificacion);
     }
+    @SuppressWarnings("unchecked")
     public void listenNotificaciones(){
         AlarmaKilometraje.cancelarTodasLasAlarmas(vista.getApplicationContext());
         List<Map<String, String>> notificaciones = negocio.getNotificacionesActivas();

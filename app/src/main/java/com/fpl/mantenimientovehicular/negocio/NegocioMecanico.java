@@ -100,6 +100,8 @@ public class NegocioMecanico {
         return modelo.agregar(mecanicoData);
     }
     public int eliminar(){
+        int id = obtenerIdPorPosicion();
+        modelo.setId(id);
         return modelo.eliminar(modelo.getId());
     }
     public int editar(){

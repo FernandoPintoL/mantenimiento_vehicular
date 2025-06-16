@@ -46,7 +46,7 @@ public class MecanicoModelProxy implements IMecanicoModel {
 
         // Validate nombre (name)
         if (modelo.getNombre() == null || modelo.getNombre().trim().isEmpty()) {
-            errorMessage = "El nombre no puede estar vacío";
+            errorMessage = "El nombre del mecanico no puede estar vacío";
             Log.e(TAG, errorMessage);
             return false;
         }
@@ -73,7 +73,7 @@ public class MecanicoModelProxy implements IMecanicoModel {
         }
 
         // Validate phone format (simple validation for numeric values)
-        if (!Pattern.matches("^[0-9+\\-\\s()]*$", modelo.getTelefono()) || modelo.getTelefono().length() < 7) {
+        if (!Pattern.matches("^[0-9+\\-\\s()]*$", modelo.getTelefono()) || modelo.getTelefono().length() <= 7) {
             errorMessage = "El formato del teléfono no es válido";
             Log.e(TAG, errorMessage);
             return false;
